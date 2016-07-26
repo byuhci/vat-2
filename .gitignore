@@ -2,13 +2,13 @@
 __pycache__/
 
 # Typescript
-typings/
-app/**/*.js
-app/**/*.map
+ui/typings/
+ui/app/**/*.js
+ui/app/**/*.map
 
 # Node
-node_modules/
-/npm-debug.log
+*/node_modules/
+*/npm-debug.log
 
 ### IDEs
 # IntelliJ
