@@ -1,13 +1,14 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { OpaqueToken } from '@angular/core';
 
-import { AppConfig, DEFAULT_CONFIG } from './app-config';
+import { AppConfig, DEFAULT_CONFIG, APP_CONFIG} from './app-config';
 
-export let APP_CONFIG = new OpaqueToken('app.config');
+
 
 @Component({
     selector: 'vat-nav-bar',
     templateUrl: 'app/nav-bar.component.html',
+    styleUrls: ['app/nav-bar.component.css'],
     providers: [{ provide: APP_CONFIG, useValue: DEFAULT_CONFIG }]
 })
 export class NavBarComponent implements OnInit {
