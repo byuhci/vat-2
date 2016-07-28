@@ -8,7 +8,7 @@ import { NavBarComponent } from './nav-bar.component';
     moduleId: module.id,
     selector: 'vat',
     template: `
-        <vat-nav-bar></vat-nav-bar>
+        <vat-nav-bar [title]="title"></vat-nav-bar>
         <router-outlet></router-outlet>`,
     directives: [ROUTER_DIRECTIVES, NavBarComponent]
 })
