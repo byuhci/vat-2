@@ -6,9 +6,10 @@ import { AppConfig, DEFAULT_CONFIG, APP_CONFIG} from './app-config';
 
 
 @Component({
+    moduleId: module.id,
     selector: 'vat-nav-bar',
-    templateUrl: 'app/nav-bar.component.html',
-    styleUrls: ['app/nav-bar.component.css']
+    templateUrl: 'nav-bar.component.html',
+    styleUrls: ['nav-bar.component.css']
 })
 export class NavBarComponent implements OnInit {
 

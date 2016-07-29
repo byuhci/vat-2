@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ViewComponent } from './view.component';
 
 @Component({
+    moduleId: module.id,
     selector: 'vat-new-workspace',
     template: `<vat-view></vat-view>`,
     directives: [ViewComponent]
