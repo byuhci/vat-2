@@ -11,7 +11,7 @@ const MY_URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
     moduleId: module.id,
     selector: 'vat-video-upload',
     templateUrl: 'video-uploader.component.html',
-    styleUrls: ['video-uploader.component.css'],
+    styleUrls: ['../dropzones.css', 'video-uploader.component.css'],
     directives: [FILE_UPLOAD_DIRECTIVES, NgClass, NgStyle, CORE_DIRECTIVES, FORM_DIRECTIVES]
 })
 export class VideoUploaderComponent implements OnInit {
