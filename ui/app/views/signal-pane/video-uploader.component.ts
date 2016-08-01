@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { DomSanitizationService } from '@angular/platform-browser';
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, NgClass, NgStyle} from '@angular/common';
 import {FILE_UPLOAD_DIRECTIVES, FileDropDirective, FileUploader} from 'ng2-file-upload/ng2-file-upload';
 
-const URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
+import { SUPPORTED_FORMATS } from './video-config';
+
+const MY_URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
 
 @Component({
     moduleId: module.id,
@@ -13,19 +16,38 @@ const URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
 })
 export class VideoUploaderComponent implements OnInit {
 
-    public uploader:FileUploader = new FileUploader({url: URL});
+    constructor(private sanitizer: DomSanitizationService) { }
+
+    public uploader:FileUploader = new FileUploader({url: MY_URL});
     public hasBaseDropZoneOver:boolean = false;
-    public hasAnotherDropZoneOver:boolean = false;
+    public video:File = undefined;
+    private raw_videoUrl:string = undefined;
+    public videoUrl = this.sanitizer.bypassSecurityTrustUrl(this.raw_videoUrl);
+    public getVideoUrl() {
+        console.log('getting url', this.raw_videoUrl)
+        return this.sanitizer.bypassSecurityTrustUrl(this.raw_videoUrl);
+    }
 
     public fileOverBase(e:any):void {
         this.hasBaseDropZoneOver = e;
+        console.log('file over base', e);
     }
 
-    public fileOverAnother(e:any):void {
-        this.hasAnotherDropZoneOver = e;
+    public fileDrop(files:File[]):void {
+        console.log('file dropped', files);
+        for (var file of files) {
+            if (SUPPORTED_FORMATS.includes(file.type)) {
+                if (!this.video) {
+                    this.video = file;
+                    console.log('video is now set to:', this.video);
+                    this.raw_videoUrl = URL.createObjectURL(file);
+                }
+                else {
+                    console.warn('video has already been set, ignoring file:', file)
+                }
+            }
+        }
     }
-
-    constructor() { }
 
     ngOnInit() { }
 

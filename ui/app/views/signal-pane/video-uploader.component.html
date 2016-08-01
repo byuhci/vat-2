@@ -1,7 +1,16 @@
-<div ng2FileDrop
-                 [ngClass]="{'nv-file-over': hasBaseDropZoneOver}"
-                 (fileOver)="fileOverBase($event)"
-                 [uploader]="uploader"
-                 class="well my-drop-zone">
-                Base drop zone
+<div *ngIf="!video">
+    <div ng2FileDrop
+                    [ngClass]="{'nv-file-over': hasBaseDropZoneOver}"
+                    (fileOver)="fileOverBase($event)"
+                    (onFileDrop)="fileDrop($event)"
+                    [uploader]="uploader"
+                    class="well my-drop-zone">
+                    Base drop zone
+    </div>
+</div>
+<div *ngIf="video">
+    <video controls>
+        <source [src]="getVideoUrl()" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
 </div>

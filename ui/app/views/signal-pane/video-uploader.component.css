@@ -9,3 +9,9 @@
 .another-file-over-class { 
     border: dotted 3px green; 
 }
+
+video {
+  width: 100%    !important;
+  height: auto   !important;
+  padding: 30px;
+}
