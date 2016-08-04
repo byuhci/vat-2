@@ -43,11 +43,11 @@ export class SignalParseService {
     private toRows(contents: string) {
         return new Promise((resolve) => {
             resolve(d3.csvParseRows(contents, function(d, i) {
-                var r = d.slice(2);
+                var [token, tick, ...dimensions] = d;
                 return {
-                    token: d[0],
-                    tick: +d[1],
-                    dimensions: r
+                    token: token,
+                    tick: +tick,
+                    dimensions: dimensions
                 }
             }));
         });
@@ -66,7 +66,7 @@ export class SignalParseService {
 
             for (let row of rows) {
                 //skip row if row is empty
-                if (row.token === "") { 
+                if (!row.token) { 
                     continue;
                 }
                 checkSignal(row.token);
