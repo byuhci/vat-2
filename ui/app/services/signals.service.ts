@@ -1,23 +1,27 @@
 import { Injectable } from '@angular/core';
 import { DomSanitizationService, SafeUrl } from '@angular/platform-browser';
 
+// allows use of d3 scripts without compiler complaining
+declare var d3: any;
+
 @Injectable()
 export class SignalParseService {
 
     constructor(private sanitizer: DomSanitizationService) { }
 
-    public parseCSV(file: File) {
-        console.log('via FileReader', file);
-        this.fileToString(file)
-            .then(str => this.toRows(str))
-            .then(rows => this.toSignals(rows))
-            .then(signals => console.log('signals', signals))
-            .catch(err => console.error('uh oh!', err));
-
+    public parseCSV(file: File): Promise<any> {
+        return new Promise((resolve,reject) => {
+            console.log('via FileReader', file);
+            this.fileToString(file)
+                .then(str => this.toRows(str))
+                .then(rows => this.toSignals(rows))
+                .then(signals => resolve(signals))
+                .catch(err => reject(err));
+        });  
     }
 
     private fileToString(file: File): Promise<any> {
-        return new Promise((resolve,reject)=> {
+        return new Promise((resolve,reject) => {
             var reader = new FileReader();
 
             // return the file contents as a string
@@ -43,7 +47,7 @@ export class SignalParseService {
                 return {
                     token: d[0],
                     tick: +d[1],
-                    readings: r
+                    dimensions: r
                 }
             }));
         });
@@ -62,11 +66,11 @@ export class SignalParseService {
 
             for (let row of rows) {
                 //skip row if row is empty
-                if (!row.token) { 
+                if (row.token === "") { 
                     continue;
                 }
                 checkSignal(row.token);
-                signals[row.token].push({tick: row.tick, readings: row.readings});
+                signals[row.token].push({tick: row.tick, dimensions: row.dimensions});
             }
 
             resolve(signals);

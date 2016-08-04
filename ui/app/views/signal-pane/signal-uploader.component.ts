@@ -18,6 +18,7 @@ export class SignalUploaderComponent implements OnInit {
 
     public uploader:FileUploader = new FileUploader({url: MY_URL});
     public hasBaseDropZoneOver:boolean = false;
+    public signals;
 
     ngOnInit() { }
 
@@ -31,7 +32,9 @@ export class SignalUploaderComponent implements OnInit {
         for (var file of files) {
             if (file.type === "text/csv") {
                 console.log('found csv file', file);
-                this.parser.parseCSV(file);
+                this.parser.parseCSV(file)
+                    .then(signals => console.log('signals received', signals))
+                    .catch(err => console.log('uh oh, an error!', err));
             }
             else {
                 console.warn('unsupported file', file);
