@@ -1,4 +1,4 @@
-<div *ngIf="!signals">
+<div *ngIf="!config">
     <div ng2FileDrop
                         [ngClass]="{'nv-file-over': hasBaseDropZoneOver}"
                         (fileOver)="fileOverBase($event)"
@@ -8,6 +8,4 @@
                         Signal drop zone
     </div>
 </div>
-<div *ngIf="signals"> 
-    <vat-signal-bar [data]="signals" [sig_id]="_id"></vat-signal-bar>
-</div>
+<vat-signal *ngIf="config" [config]="config"></vat-signal>
