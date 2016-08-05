@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, NgClass, NgStyle} from '@angular/common';
 import {FILE_UPLOAD_DIRECTIVES, FileDropDirective, FileUploader} from 'ng2-file-upload/ng2-file-upload';
 import { SignalParseService } from '../../services/signals.service';
+import { SignalBarComponent } from '../shared/signal-bar.component';
 
 const MY_URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
 
@@ -10,7 +11,7 @@ const MY_URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
     selector: 'vat-signal-upload',
     templateUrl: 'signal-uploader.component.html',
     styleUrls: ['../dropzones.css'],
-    directives: [FILE_UPLOAD_DIRECTIVES, NgClass, NgStyle, CORE_DIRECTIVES, FORM_DIRECTIVES],
+    directives: [FILE_UPLOAD_DIRECTIVES, NgClass, NgStyle, CORE_DIRECTIVES, FORM_DIRECTIVES, SignalBarComponent],
     providers: [SignalParseService]
 })
 export class SignalUploaderComponent implements OnInit {
@@ -19,6 +20,7 @@ export class SignalUploaderComponent implements OnInit {
     public uploader:FileUploader = new FileUploader({url: MY_URL});
     public hasBaseDropZoneOver:boolean = false;
     public signals;
+    public _id = 0;
 
     ngOnInit() { }
 
@@ -33,7 +35,7 @@ export class SignalUploaderComponent implements OnInit {
             if (file.type === "text/csv") {
                 console.log('found csv file', file);
                 this.parser.parseCSV(file)
-                    .then(signals => console.log('signals received', signals))
+                    .then(signals => this.signals = signals)
                     .catch(err => console.log('uh oh, an error!', err));
             }
             else {
