@@ -35,7 +35,7 @@ export class SignalUploaderComponent implements OnInit {
             if (file.type === "text/csv") {
                 console.log('found csv file', file);
                 this.parser.parseCSV(file)
-                    .then(signals => this.signals = signals)
+                    .then(signals => this.signals = signals['A'])
                     .catch(err => console.log('uh oh, an error!', err));
             }
             else {

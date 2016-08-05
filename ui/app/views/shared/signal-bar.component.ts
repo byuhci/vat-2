@@ -11,110 +11,131 @@ declare var d3: any;
 export class SignalBarComponent implements OnInit {
     constructor() { }
 
-    svg;
-    private gradient;
-    private zoom;
     @Input('sig_id') _id: number;
     @Input() data: any;
 
     ngOnInit() {
-        console.log('on init');
-        this.svg = d3.select(".lower-signal-widget").append("svg")
-            .attr("width", this.width + this.margin.left + this.margin.right)
-            .attr("height", this.height + this.margin.top + this.margin.bottom)
+        console.log('on init', this.data);
+
+        //var data = this.data;
+        var data = [{tick: 1, dimensions: ["1","2","3"]},
+                    {tick: 2, dimensions: ["10","2","3"]},
+                    {tick: 3, dimensions: ["12","2","3"]},
+                    {tick: 4, dimensions: ["14","2","3"]},
+                    {tick: 5, dimensions: ["5","2","3"]},
+                    {tick: 6, dimensions: ["-1","2","3"]},
+                    {tick: 7, dimensions: ["-16","2","3"]},
+                    {tick: 8, dimensions: ["0","2","3"]},
+                    {tick: 9, dimensions: ["9","2","3"]},
+                    {tick: 10, dimensions: ["16","2","3"]},
+                    {tick: 11, dimensions: ["12","2","3"]}];
+
+        var margin = {top: 20, right: 60, bottom: 30, left: 20};
+        var width = 960 - margin.left - margin.right;
+        var height = 500 - margin.top - margin.bottom;
+
+        var x = d3.scaleLinear()
+            .range([0, width]);
+
+        var y = d3.scaleLinear()
+            .range([height, 0]);
+
+        var xAxis = d3.axisBottom(x)
+        .tickSize(-height, 0)
+        .tickPadding(6);
+
+        var yAxis = d3.axisRight(y)
+        .tickSize(-width)
+        .tickPadding(6);
+
+        var area = d3.area()
+        .x(function(d) { return x(d.tick); })
+        .y0(y(0))
+        .y1(function(d) { return y(+d.dimensions[0]); });
+
+        var draw_my_line = d3.line()
+            .x(function(d) { console.log('ld', d); return x(d.tick); })
+            .y(function(d) { return y(+d.dimensions[0]); });
+
+        var svg = d3.select(".lower-signal-widget").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
         .append("g")
-            .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
-        console.log('init svg', this.svg);
-        this.gradient = this.svg.append("defs").append("linearGradient")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        console.log('init svg', svg);
+        var gradient = svg.append("defs").append("linearGradient")
         .attr("id", "gradient")
         .attr("x2", "0%")
         .attr("y2", "100%");
 
-        this.zoom = d3.zoom()
-        .on("zoom", this.draw);
+        var zoom = d3.zoom()
+        .on("zoom", draw);
         
-        this.gradient.append("stop")
+        gradient.append("stop")
         .attr("offset", "0%")
         .attr("stop-color", "#fff")
         .attr("stop-opacity", .5);
 
-        this.gradient.append("stop")
+        gradient.append("stop")
             .attr("offset", "100%")
             .attr("stop-color", "#999")
             .attr("stop-opacity", 1);
 
-        this.svg.append("clipPath")
+        svg.append("clipPath")
             .attr("id", "clip")
         .append("rect")
-            .attr("x", this.x(0))
-            .attr("y", this.y(1))
-            .attr("width", this.x(1) - this.x(0))
-            .attr("height", this.y(0) - this.y(1));
+            .attr("x", x(0))
+            .attr("y", y(1))
+            .attr("width", x(1) - x(0))
+            .attr("height", y(0) - y(1));
 
-        this.svg.append("g")
+        svg.append("g")
             .attr("class", "y axis")
-            .attr("transform", "translate(" + this.width + ",0)");
+            .attr("transform", "translate(" + width + ",0)");
 
-        this.svg.append("path")
+        svg.append("path")
             .attr("class", "area")
             .attr("clip-path", "url(#clip)")
             .style("fill", "url(#gradient)");
 
-        this.svg.append("g")
+        svg.append("g")
             .attr("class", "x axis")
-            .attr("transform", "translate(0," + this.height + ")");
+            .attr("transform", "translate(0," + height + ")");
 
-        this.svg.append("path")
+        svg.append("path")
             .attr("class", "line")
             .attr("clip-path", "url(#clip)");
 
-        this.svg.append("rect")
+        svg.append("rect")
             .attr("class", "pane")
-            .attr("width", this.width)
-            .attr("height", this.height)
-            .call(this.zoom);
+            .attr("width", width)
+            .attr("height", height)
+            .call(zoom);
     
-        this.x.domain(d3.extent(this.data, function(d) { return d.tick; }));
-        this.y.domain(d3.extent(this.data, function(d) { return d.dimensions[0]; }));
+        x.domain(d3.extent(data, function(d) { return d.tick; }));
+        y.domain(d3.extent(data, function(d) { return +d.dimensions[0]; }));
+        // zoom.x(x);
+        console.log('x', x);
 
-        this.svg.select("path.line").data([this.data]);
-        console.log('drawing', this.svg);
-        this.draw();
+        // svg.select("path.area").data(this.data);
+        console.log('data to add', data);
+        svg.select("path.line").data(data, function(d) {
+            console.log('d', d, this);
+            return d ? d : {tick: 0, dimensions: ["1", "2", "3"]};
+        });
+        // console.log('path', this.svg.select("path.line"));
+        console.log('drawing', svg);
+        draw();
+
+        function draw() {
+            console.log('draw method', draw_my_line);
+            svg.select("g.x.axis").call(xAxis);
+            svg.select("g.y.axis").call(yAxis);
+            // svg.select("path.line").attr("d", area);
+            svg.select("path.line").attr("d", draw_my_line);
+        }
     }
 
-    margin = {top: 20, right: 60, bottom: 30, left: 20};
-    width = 960 - this.margin.left - this.margin.right;
-    height = 500 - this.margin.top - this.margin.bottom;
-
-    x = d3.scaleLinear()
-        .range([0, this.width]);
-
-    y = d3.scaleLinear()
-        .range([this.height, 0]);
-
-    xAxis = d3.axisBottom(this.x)
-    .tickSize(-this.height, 0)
-    .tickPadding(6);
-
-    yAxis = d3.axisRight(this.y)
-    .tickSize(-this.width)
-    .tickPadding(6);
-
-    area = d3.area()
-    .x(function(d) { return this.x(d.tick); })
-    .y0(this.y(0))
-    .y1(function(d) { return this.y(d.dimensions[0]); });
-
-    line = d3.line()
-    .x(function(d) { return this.x(d.tick); })
-    .y(function(d) { return this.y(d.dimensions[0]); });
-
-    draw() {
-        console.log('draw method', this.svg);
-        this.svg.select("g.x.axis").call(this.xAxis);
-        this.svg.select("g.y.axis").call(this.yAxis);
-        this.svg.select("path.line").attr("d", this.area);
-        this.svg.select("path.line").attr("d", this.line);
-    }
+    
 
 }
