@@ -42,11 +42,12 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
         this.buildSVG();
         this.populate();
         this.drawXAxis();
+        this.drawYAxis();
     }
 
     /* Will setup the chart container */
     private setup(): void {
-        this.margin = { top: 20, right: 20, bottom: 40, left: 40 };
+        this.margin = { top: 20, right: 20, bottom: 40, left: 80 };
         this.width = this.htmlElement.clientWidth - this.margin.left - this.margin.right;
         this.height = this.htmlElement.clientHeight - this.margin.top - this.margin.bottom;
         this.xScale = d3.scaleLinear().range([0, this.width]);
@@ -76,7 +77,11 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
     }
     
     /* Will draw the Y Axis */
-    private drawYAxis(): void {}
+    private drawYAxis(): void {
+        this.svg.append("g")
+            .attr("class", "axis axis--y")
+            .call(d3.axisLeft(this.yScale));
+    }
 
     /* Will populate datasets into areas*/
     private populate(): void {
