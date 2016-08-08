@@ -23,6 +23,7 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
     private xAxis;       // D3 X Axis
     private yAxis;       // D3 Y Axis
     private htmlElement; // Host HTMLElement
+    private line;
 
     
 
@@ -39,6 +40,7 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
     ngOnChanges() {
         this.setup();
         this.buildSVG();
+        this.populate();
     }
 
     /* Will setup the chart container */
@@ -49,6 +51,9 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
         this.height = this.htmlElement.clientHeight - this.margin.top - this.margin.bottom;
         this.xScale = d3.scaleLinear().range([0, this.width]);
         this.yScale = d3.scaleLinear().range([this.height, 0]);
+        this.line = d3.line()
+            .x((d: any) => this.xScale(d.x))
+            .y((d: any) => this.yScale(d.y));
         console.log('setup complete', this.width, this.height, this.htmlElement);
     }
     
@@ -67,15 +72,17 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
     
     /* Will draw the Y Axis */
     private drawYAxis(): void {}
-    
-    /* Will get the Maximum value in Y */
-    private getMaxY(): number {
-        return 0;
-    }
 
     /* Will populate datasets into areas*/
     private populate(): void {
-        
+        this.config.forEach((signal: any) => {
+            this.xScale.domain(d3.extent(signal.dataset, (d: any) => d.x));
+            this.yScale.domain(d3.extent(signal.dataset, (d: any) => d.y));
+            this.svg.append("path")
+                .datum(signal.dataset)
+                .attr("class", "line")
+                .attr("d", this.line);
+        });
     }
 
 }

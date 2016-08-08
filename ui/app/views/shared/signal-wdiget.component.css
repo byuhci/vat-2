@@ -3,12 +3,12 @@
     height: 100%;
     display:block;
 }
-:host .axis path,
-:host .axis line {
-    fill: none;
-    stroke: rgba(0, 0, 0, 0.2);
-    color: rgba(0, 0, 0, 0.2);
-    shape-rendering: crispEdges;
+
+:host .line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+  shape-rendering: crispEdges;
 }
 
 :host .axis text {
@@ -35,4 +35,19 @@
 }
 :host .color-label{
     display: inline;
+}
+
+.axis {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.axis--x path {
+  display: none;
 }
