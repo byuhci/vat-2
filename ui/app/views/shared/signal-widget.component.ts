@@ -120,8 +120,9 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
         .style("pointer-events", "all")
         .call(
             d3.zoom()
-            // .scaleExtent([1, 40])
-            .translateExtent([-100, -100], [this.width + 90, this.height + 100])
+            .scaleExtent([1, 50])
+            .translateExtent([0, 0], [this.width, this.height])
+            .extent([[0, 0], [this.width, this.height]])
             .on("zoom", () => this.zoomed()));
     }
 
