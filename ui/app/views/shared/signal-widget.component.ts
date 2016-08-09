@@ -19,6 +19,7 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
     private width;       // Component width
     private height;      // Component height
     private xScale;      // D3 scale in X
+    private x0Scale;     // Original scale for X
     private yScale;      // D3 scale in Y
     private xAxis;       // D3 X Axis
     private yAxis;       // D3 Y Axis
@@ -60,6 +61,7 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
         this.width = this.htmlElement.clientWidth - this.margin.left - this.margin.right;
         this.height = this.htmlElement.clientHeight - this.margin.top - this.margin.bottom;
         this.xScale = d3.scaleLinear().range([0, this.width]);
+        this.x0Scale = d3.scaleLinear().range([0, this.width]);
         this.yScale = d3.scaleLinear().range([this.height, 0]);
         this.xAxis = d3.axisBottom(this.xScale);
         this.yAxis = d3.axisLeft(this.yScale);
@@ -106,6 +108,7 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
         this.config.forEach((signal: any) => {
             this.xScale.domain(d3.extent(signal.dataset, (d: any) => d.x));
             this.yScale.domain(d3.extent(signal.dataset, (d: any) => d.y));
+            this.x0Scale.domain(this.xScale.domain());
             this.svg.append("path")
                 .datum(signal.dataset)
                 .attr("class", "line")
@@ -123,16 +126,21 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
         .call(
             d3.zoom()
             // .scaleExtent([1, 40])
-            // .translateExtent([-100, -100], [this.width + 90, this.height + 100])
+            .translateExtent([-100, -100], [this.width + 90, this.height + 100])
             .on("zoom", () => {this.zoomed();}))
         .on("click", () => console.log("clicked!"));
     }
 
     public zoomed(): void {
         console.log('zoom');
-        this.view.attr('transform', d3.event.transform);
-        this.svg.select('path').attr('transform', d3.event.transform);
-        this.gX.call(this.xAxis.scale(d3.event.transform.rescaleX(this.xScale)));
+        var t = d3.event.transform;
+
+        this.xScale.domain(t.rescaleX(this.x0Scale).domain());
+        this.svg.select(".line").attr("d", this.line);
+        this.svg.select(".axis--x").call(this.xAxis);
+        // this.view.attr('transform', d3.event.transform);
+        // this.svg.select('path').attr('transform', d3.event.transform);
+        // this.gX.call(this.xAxis.scale(d3.event.transform.rescaleX(this.xScale)));
         //this.gY.call(this.yAxis.scale(d3.event.transform.rescaleY(this.yScale)));
     }
 
