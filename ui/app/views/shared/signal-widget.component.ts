@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, Input, ElementRef } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, ElementRef, NgZone } from '@angular/core';
 import { SignalWidgetConfig } from './widget-config';
 declare var d3: any;
 
@@ -30,7 +30,7 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
 
     
 
-    constructor(private element: ElementRef) { 
+    constructor(private element: ElementRef, private zone: NgZone) { 
         this.htmlElement = this.element.nativeElement;
         this.host = d3.select(this.element.nativeElement);
     }
@@ -120,10 +120,11 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
         .attr("width", this.width)
         .attr("height", this.height)
         .style("pointer-events", "all")
-        .call(d3.zoom()
-            .scaleExtent([1, 40])
-            .translateExtent([-100, -100], [this.width + 90, this.height + 100]))
-            .on("zoom", () => console.log('zoom!'))
+        .call(
+            d3.zoom()
+            // .scaleExtent([1, 40])
+            // .translateExtent([-100, -100], [this.width + 90, this.height + 100])
+            .on("zoom", () => {console.log('zoomed!');}))
         .on("click", () => console.log("clicked!"));
     }
 
