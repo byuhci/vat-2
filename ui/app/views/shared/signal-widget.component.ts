@@ -124,15 +124,16 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
             d3.zoom()
             // .scaleExtent([1, 40])
             // .translateExtent([-100, -100], [this.width + 90, this.height + 100])
-            .on("zoom", () => {console.log('zoomed!');}))
+            .on("zoom", () => {this.zoomed();}))
         .on("click", () => console.log("clicked!"));
     }
 
     public zoomed(): void {
         console.log('zoom');
         this.view.attr('transform', d3.event.transform);
+        this.svg.select('path').attr('transform', d3.event.transform);
         this.gX.call(this.xAxis.scale(d3.event.transform.rescaleX(this.xScale)));
-        this.gY.call(this.yAxis.scale(d3.event.transform.rescaleY(this.yScale)));
+        //this.gY.call(this.yAxis.scale(d3.event.transform.rescaleY(this.yScale)));
     }
 
     public whee(): void {
