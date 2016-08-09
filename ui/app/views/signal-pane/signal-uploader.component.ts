@@ -68,4 +68,8 @@ export class SignalUploaderComponent implements OnInit {
         return config;
     }
 
+    public foo() {
+        console.log('whee!');
+    }
+
 }

@@ -37,17 +37,27 @@
     display: inline;
 }
 
-.axis {
+:host .axis {
   font: 10px sans-serif;
 }
 
-.axis path,
-.axis line {
+:host .axis path,
+:host .axis line {
   fill: none;
   stroke: #000;
   shape-rendering: crispEdges;
 }
 
-.axis--x path {
+:host .axis--x path {
   display: none;
+}
+
+:host .zoom {
+  fill: none;
+  pointer-events: all;
+}
+
+:host .view {
+  fill: none;
+  stroke: #000;
 }

@@ -23,7 +23,10 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
     private xAxis;       // D3 X Axis
     private yAxis;       // D3 Y Axis
     private htmlElement; // Host HTMLElement
-    private line;
+    private line;        // D3 Line
+    private view;        // D3 View
+    private gX;
+    private gY;
 
     
 
@@ -38,11 +41,17 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
 
     /* Will Update on every @Input change */
     ngOnChanges() {
+        console.log('registering changes');
         this.setup();
         this.buildSVG();
         this.populate();
         this.drawXAxis();
         this.drawYAxis();
+        this.setupZoom();
+    }
+
+    ngDoCheck(d) {
+        console.log("checking", d);
     }
 
     /* Will setup the chart container */
@@ -52,6 +61,8 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
         this.height = this.htmlElement.clientHeight - this.margin.top - this.margin.bottom;
         this.xScale = d3.scaleLinear().range([0, this.width]);
         this.yScale = d3.scaleLinear().range([this.height, 0]);
+        this.xAxis = d3.axisBottom(this.xScale);
+        this.yAxis = d3.axisLeft(this.yScale);
         this.line = d3.line()
             .x((d: any) => this.xScale(d.x))
             .y((d: any) => this.yScale(d.y));
@@ -66,21 +77,28 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
             .attr('height', this.height + this.margin.top + this.margin.bottom)
             .append('g')
             .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
+        this.view = this.svg.append("rect")
+            .attr("class", "view")
+            .attr("x", 0.5)
+            .attr("y", 0.5)
+            .attr("width", this.width - 1)
+            .attr("height", this.height - 1);
     }
     
     /* Will draw the X Axis */
     private drawXAxis(): void {
-        this.svg.append("g")
+        
+        this.gX = this.svg.append("g")
             .attr("class", "axis axis--x")
             .attr("transform", "translate(0, " + this.height + ")")
-            .call(d3.axisBottom(this.xScale));
+            .call(this.xAxis);   
     }
     
     /* Will draw the Y Axis */
     private drawYAxis(): void {
-        this.svg.append("g")
+        this.gY = this.svg.append("g")
             .attr("class", "axis axis--y")
-            .call(d3.axisLeft(this.yScale));
+            .call(this.yAxis);
     }
 
     /* Will populate datasets into areas*/
@@ -93,6 +111,31 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
                 .attr("class", "line")
                 .attr("d", this.line);
         });
+    }
+
+    private setupZoom(): void {
+        console.log('setting up zoom', this.svg);
+        this.svg.append("rect")
+        .attr("class", "zoom")
+        .attr("width", this.width)
+        .attr("height", this.height)
+        .style("pointer-events", "all")
+        .call(d3.zoom()
+            .scaleExtent([1, 40])
+            .translateExtent([-100, -100], [this.width + 90, this.height + 100]))
+            .on("zoom", () => console.log('zoom!'))
+        .on("click", () => console.log("clicked!"));
+    }
+
+    public zoomed(): void {
+        console.log('zoom');
+        this.view.attr('transform', d3.event.transform);
+        this.gX.call(this.xAxis.scale(d3.event.transform.rescaleX(this.xScale)));
+        this.gY.call(this.yAxis.scale(d3.event.transform.rescaleY(this.yScale)));
+    }
+
+    public whee(): void {
+        console.log('you clicked me!');
     }
 
 }
