@@ -1,4 +1,5 @@
 import { Component, OnInit, OnChanges, Input, ElementRef } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { SignalWidgetConfig } from './widget-config';
 declare var d3: any;
 
@@ -26,10 +27,11 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
     private htmlElement; // Host HTMLElement
     private line;        // D3 Line
     private view;        // View Container for the chart
-
+    private paths;       // Container for all line paths
+    private url;         // The relative url path from root
     
 
-    constructor(private element: ElementRef) { 
+    constructor(private element: ElementRef, private route: ActivatedRoute) { 
         this.htmlElement = this.element.nativeElement;
         this.host = d3.select(this.element.nativeElement);
     }
@@ -41,12 +43,26 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
     /* Will Update on every @Input change */
     ngOnChanges() {
         console.log('registering changes');
+        this.setUrl();
         this.setup();
         this.buildSVG();
         this.populate();
         this.drawXAxis();
         this.drawYAxis();
         this.setupZoom();
+    }
+
+    /* TODO: This is a hack! Try to find some other way around this problem. */
+    private setUrl(): void {
+        if (!this.url) {
+            this.url = "";
+            this.route.url.forEach(path => {
+                path.forEach(part => {
+                    this.url += "/" + part.path;
+                });
+            });
+            console.log('set url', this.url);
+        }
     }
 
     /* Sets up the chart container */
@@ -73,6 +89,11 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
             .attr('height', this.height + this.margin.top + this.margin.bottom)
             .append('g')
             .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
+        this.svg.append("defs").append("clipPath")
+            .attr("id", "clip")
+            .append("rect")
+            .attr("width", this.width - 1)
+            .attr("height", this.height - 1);
         this.view = this.svg.append("rect")
             .attr("class", "view")
             .attr("x", 0.5)
@@ -99,11 +120,13 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
 
     /* Populates datasets into line graphs */
     private populate(): void {
+        this.paths = this.svg.append("g")
+            .attr('clip-path', "url(" + this.url + "#clip)");
         this.config.forEach((signal: any) => {
             this.xScale.domain(d3.extent(signal.dataset, (d: any) => d.x));
             this.yScale.domain(d3.extent(signal.dataset, (d: any) => d.y));
             this.x0Scale.domain(this.xScale.domain());
-            this.svg.append("path")
+            this.paths.append("path")
                 .datum(signal.dataset)
                 .attr("class", "line")
                 .attr("d", this.line);
@@ -121,8 +144,7 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
         .call(
             d3.zoom()
             .scaleExtent([1, 50])
-            .translateExtent([0, 0], [this.width, this.height])
-            .extent([[0, 0], [this.width, this.height]])
+            // .translateExtent([0, 0], [this.width, this.height])
             .on("zoom", () => this.zoomed()));
     }
 
