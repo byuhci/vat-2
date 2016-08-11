@@ -2,6 +2,8 @@ import { NgModule }       from '@angular/core';
 import { BrowserModule }  from '@angular/platform-browser';
 import { FormsModule }    from '@angular/forms';
 
+import { FILE_UPLOAD_DIRECTIVES, FileDropDirective } from 'ng2-file-upload/ng2-file-upload';
+
 import { AppComponent }   from './app.component';
 import { routing }        from './app.routing';
 
@@ -31,7 +33,9 @@ import { VideoService } from './services/video.service';
     NewWorkspaceComponent,
     VideoUploaderComponent,
     SignalUploaderComponent,
-    SignalWidgetComponent
+    SignalWidgetComponent,
+    FILE_UPLOAD_DIRECTIVES,
+    FileDropDirective
   ],
   providers: [
     SignalParseService,

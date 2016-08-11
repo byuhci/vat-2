@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizationService } from '@angular/platform-browser';
-import {FILE_UPLOAD_DIRECTIVES, FileDropDirective, FileUploader} from 'ng2-file-upload/ng2-file-upload';
+import {FileUploader} from 'ng2-file-upload/ng2-file-upload';
 import { SUPPORTED_FORMATS } from './video-config';
 
 const MY_URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
@@ -9,8 +9,7 @@ const MY_URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
     moduleId: module.id,
     selector: 'vat-video-upload',
     templateUrl: 'video-uploader.component.html',
-    styleUrls: ['../dropzones.css', 'video-uploader.component.css'],
-    directives: [FILE_UPLOAD_DIRECTIVES]
+    styleUrls: ['../dropzones.css', 'video-uploader.component.css']
 })
 export class VideoUploaderComponent implements OnInit {
 
@@ -20,10 +19,13 @@ export class VideoUploaderComponent implements OnInit {
     public hasBaseDropZoneOver:boolean = false;
     public video:File = undefined;
     private raw_videoUrl:string = undefined;
-    public videoUrl = this.sanitizer.bypassSecurityTrustUrl(this.raw_videoUrl);
+    private _videoUrl;
     public getVideoUrl() {
-        console.log('getting url', this.raw_videoUrl)
-        return this.sanitizer.bypassSecurityTrustUrl(this.raw_videoUrl);
+        if (!this._videoUrl) {
+            console.log('getting url', this.raw_videoUrl);
+            this._videoUrl = this.sanitizer.bypassSecurityTrustUrl(this.raw_videoUrl);
+        }
+        return this._videoUrl;
     }
 
     public fileOverBase(e:any):void {

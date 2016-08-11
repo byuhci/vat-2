@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {FILE_UPLOAD_DIRECTIVES, FileDropDirective, FileUploader} from 'ng2-file-upload/ng2-file-upload';
+import {FileUploader} from 'ng2-file-upload/ng2-file-upload';
 import { SignalParseService } from '../../services/signals.service';
 import { SignalWidgetConfig } from '../shared/widget-config';
 
@@ -9,8 +9,7 @@ const MY_URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
     moduleId: module.id,
     selector: 'vat-signal-upload',
     templateUrl: 'signal-uploader.component.html',
-    styleUrls: ['../dropzones.css'],
-    directives: [FILE_UPLOAD_DIRECTIVES],
+    styleUrls: ['../dropzones.css']
 })
 export class SignalUploaderComponent implements OnInit {
     constructor(private parser: SignalParseService) { }
