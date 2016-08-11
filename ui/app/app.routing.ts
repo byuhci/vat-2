@@ -1,9 +1,9 @@
-import { provideRouter, RouterConfig }  from '@angular/router';
+import { Routes, RouterModule }  from '@angular/router';
 
 import { DashboardComponent } from './dashboard.component';
 import { NewWorkspaceComponent } from './views/new-workspace.component';
 
-const routes: RouterConfig = [
+const appRoutes: Routes = [
 	{
 		path: 'dashboard',
 		component: DashboardComponent
@@ -19,6 +19,4 @@ const routes: RouterConfig = [
 	}
 ];
 
-export const appRouterProviders = [
-	provideRouter(routes)
-];
+export const routing = RouterModule.forRoot(appRoutes);
