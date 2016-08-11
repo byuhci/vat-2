@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizationService } from '@angular/platform-browser';
-import {CORE_DIRECTIVES, FORM_DIRECTIVES, NgClass, NgStyle} from '@angular/common';
 import {FILE_UPLOAD_DIRECTIVES, FileDropDirective, FileUploader} from 'ng2-file-upload/ng2-file-upload';
-
 import { SUPPORTED_FORMATS } from './video-config';
 
 const MY_URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
@@ -12,7 +10,7 @@ const MY_URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
     selector: 'vat-video-upload',
     templateUrl: 'video-uploader.component.html',
     styleUrls: ['../dropzones.css', 'video-uploader.component.css'],
-    directives: [FILE_UPLOAD_DIRECTIVES, NgClass, NgStyle, CORE_DIRECTIVES, FORM_DIRECTIVES]
+    directives: [FILE_UPLOAD_DIRECTIVES]
 })
 export class VideoUploaderComponent implements OnInit {
 

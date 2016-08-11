@@ -7,8 +7,7 @@ declare var d3: any;
     moduleId: module.id,
     selector: 'vat-signal',
     template: `<ng-content></ng-content>`,
-    styleUrls: ['./signal-wdiget.component.css'],
-    directives: []
+    styleUrls: ['./signal-wdiget.component.css']
 })
 export class SignalWidgetComponent implements OnInit, OnChanges {
 
