@@ -2,6 +2,12 @@ import { NgModule }       from '@angular/core';
 import { BrowserModule }  from '@angular/platform-browser';
 import { FormsModule }    from '@angular/forms';
 
+import { HttpModule } from '@angular/http';
+// These are only used for mocking a database
+import { XHRBackend } from '@angular/http';
+import { InMemoryBackendService, SEED_DATA } from 'angular2-in-memory-web-api';
+import { MockDataService } from './services/mock-data.service';
+
 import { FILE_UPLOAD_DIRECTIVES, FileDropDirective } from 'ng2-file-upload/ng2-file-upload';
 
 import { AppComponent }   from './app.component';
@@ -23,7 +29,8 @@ import { VideoService } from './services/video.service';
   imports: [
     BrowserModule,
     FormsModule,
-    routing
+    routing,
+    HttpModule
   ],
   declarations: [
     AppComponent,
@@ -39,7 +46,9 @@ import { VideoService } from './services/video.service';
   ],
   providers: [
     SignalParseService,
-    VideoService
+    VideoService,
+    { provide: XHRBackend, useClass: InMemoryBackendService }, // in-mem server
+    { provide: SEED_DATA,  useClass: MockDataService }     // in-mem server data
   ],
   bootstrap: [ AppComponent ]
 })
