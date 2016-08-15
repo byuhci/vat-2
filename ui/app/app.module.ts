@@ -16,12 +16,14 @@ import { routing }        from './app.routing';
 import { NavBarComponent } from './nav-bar.component';
 import { DashboardComponent } from './dashboard.component';
 
+import { ProjectsComponent } from './navigation/projects.component';
 import { ViewComponent } from './views/view.component';
 import { NewWorkspaceComponent } from './views/new-workspace.component';
 import { VideoUploaderComponent } from './views/center-pane/video-uploader.component';
 import { SignalUploaderComponent } from './views/signal-pane/signal-uploader.component';
 import { SignalWidgetComponent } from './views/shared/signal-widget.component';
 
+import { ProjectService } from './services/projects.service';
 import { SignalParseService } from './services/signals.service';
 import { VideoService } from './services/video.service';
 
@@ -36,6 +38,7 @@ import { VideoService } from './services/video.service';
     AppComponent,
     NavBarComponent,
     DashboardComponent,
+    ProjectsComponent,
     ViewComponent,
     NewWorkspaceComponent,
     VideoUploaderComponent,
@@ -47,6 +50,7 @@ import { VideoService } from './services/video.service';
   providers: [
     SignalParseService,
     VideoService,
+    ProjectService,
     { provide: XHRBackend, useClass: InMemoryBackendService }, // in-mem server
     { provide: SEED_DATA,  useClass: MockDataService }     // in-mem server data
   ],
