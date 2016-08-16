@@ -63,9 +63,4 @@ export class SignalUploaderComponent implements OnInit {
         console.log('config', config);
         return config;
     }
-
-    public foo() {
-        console.log('whee!');
-    }
-
 }
