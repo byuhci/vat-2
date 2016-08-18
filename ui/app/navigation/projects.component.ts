@@ -20,5 +20,4 @@ export class ProjectsComponent implements OnInit {
         this.projectService.getProjects()
             .then(projects => this.projects = projects);
      }
-
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DomSanitizationService, SafeUrl } from '@angular/platform-browser';
+import { Sensor, Signal } from './../util/signal';
 
 // allows use of d3 scripts without compiler complaining
 declare var d3: any;
@@ -14,7 +15,7 @@ export class SignalParseService {
             console.log('via FileReader', file);
             this.fileToString(file)
                 .then(str => this.toRows(str))
-                .then(rows => this.toSignals(rows))
+                .then(rows => this.toSensors(rows))
                 .then(signals => resolve(signals))
                 .catch(err => reject(err));
         });  
@@ -53,15 +54,16 @@ export class SignalParseService {
         });
     }
 
-    private toSignals(rows) {
+    private toSensors(rows) {
         return new Promise((resolve) => {
-            let signals = {}
+            let sensors = {};
 
-            // makes sure there is an array to append to
-            function checkSignal(token) {
-                if (!(token in signals)) {
-                    signals[token] = []
+            // makes sure there is a Sensor object
+            function getSensor(token): Sensor {
+                if (!(token in sensors)) {
+                    sensors[token] = new Sensor(token);
                 }
+                return sensors[token];
             }
 
             for (let row of rows) {
@@ -69,11 +71,22 @@ export class SignalParseService {
                 if (!row.token) { 
                     continue;
                 }
-                checkSignal(row.token);
-                signals[row.token].push({tick: row.tick, dimensions: row.dimensions});
-            }
 
-            resolve(signals);
+                let sensor = getSensor(row.token);
+                for (var i = 0; i < row.dimensions.length; i++)
+                {
+                    //if sensor is not syslog or error, convert to number
+                    let value = row.dimensions[i];
+                    if (sensor.isMessage()) {
+                        value = +value;
+                    }
+                    //create a Reading object, and append to signal
+                    let r = {tick: row.tick, value: value};
+                    sensor.getSignal(i).append(r);
+                }
+            }
+            console.log('sensors:', sensors);
+            resolve(sensors);
         });
     }
 }
