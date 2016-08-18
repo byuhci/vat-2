@@ -41,26 +41,4 @@ export class SignalUploaderComponent implements OnInit {
             }
         }
     }
-
-    // private toConfigArray(signals): Array<SignalWidgetConfig> {
-    //     // TODO: temporarily we will only use the first dimension of the Accelerometer
-    //     let d1 = signals['A'];
-    //     let config = this.signalConfig(d1);
-
-    //     return [config];
-    // }
-
-    // private signalConfig(signal): SignalWidgetConfig {
-    //     console.log('converting to config');
-    //     let config = new SignalWidgetConfig();
-    //     config.settings = {
-    //         fill: 'rgba(195, 0, 47, 1)',
-    //         interpolation: 'monotone'
-    //     };
-    //     config.dataset = signal.map(data => {
-    //         return { x: data.tick, y: +data.dimensions[0]};
-    //     });
-    //     console.log('config', config);
-    //     return config;
-    //}
 }
