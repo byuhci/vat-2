@@ -16,7 +16,7 @@ export class SignalUploaderComponent implements OnInit {
 
     public uploader:FileUploader = new FileUploader({url: MY_URL});
     public hasBaseDropZoneOver:boolean = false;
-    public signals;
+    public sensors;
     public _id = 0;
     public config;
 
@@ -33,7 +33,7 @@ export class SignalUploaderComponent implements OnInit {
             if (file.type === "text/csv") {
                 console.log('found csv file', file);
                 this.parser.parseCSV(file)
-                    .then(signals => this.config = this.toConfigArray(signals))
+                    .then(sensors => this.sensors = sensors)
                     .catch(err => console.log('uh oh, an error!', err));
             }
             else {
@@ -42,25 +42,25 @@ export class SignalUploaderComponent implements OnInit {
         }
     }
 
-    private toConfigArray(signals): Array<SignalWidgetConfig> {
-        // TODO: temporarily we will only use the first dimension of the Accelerometer
-        let d1 = signals['A'];
-        let config = this.signalConfig(d1);
+    // private toConfigArray(signals): Array<SignalWidgetConfig> {
+    //     // TODO: temporarily we will only use the first dimension of the Accelerometer
+    //     let d1 = signals['A'];
+    //     let config = this.signalConfig(d1);
 
-        return [config];
-    }
+    //     return [config];
+    // }
 
-    private signalConfig(signal): SignalWidgetConfig {
-        console.log('converting to config');
-        let config = new SignalWidgetConfig();
-        config.settings = {
-            fill: 'rgba(195, 0, 47, 1)',
-            interpolation: 'monotone'
-        };
-        config.dataset = signal.map(data => {
-            return { x: data.tick, y: +data.dimensions[0]};
-        });
-        console.log('config', config);
-        return config;
-    }
+    // private signalConfig(signal): SignalWidgetConfig {
+    //     console.log('converting to config');
+    //     let config = new SignalWidgetConfig();
+    //     config.settings = {
+    //         fill: 'rgba(195, 0, 47, 1)',
+    //         interpolation: 'monotone'
+    //     };
+    //     config.dataset = signal.map(data => {
+    //         return { x: data.tick, y: +data.dimensions[0]};
+    //     });
+    //     console.log('config', config);
+    //     return config;
+    //}
 }

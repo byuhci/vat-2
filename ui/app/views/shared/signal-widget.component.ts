@@ -1,6 +1,6 @@
 import { Component, OnInit, OnChanges, Input, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { SignalWidgetConfig } from './widget-config';
+import { Data } from './../../util/signal';
 declare var d3: any;
 
 @Component({
@@ -11,7 +11,8 @@ declare var d3: any;
 })
 export class SignalWidgetComponent implements OnInit, OnChanges {
 
-    @Input() config: Array<SignalWidgetConfig>;
+    @Input() data: Data;
+    displaySensors = ['A'];
 
     private host;        // D3 object referencing host dom object
     private svg;         // SVG in which we will print our chart
@@ -36,7 +37,7 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
     }
 
     ngOnInit() { 
-        console.log('received input', this.config);
+        console.log('received input', this.data);
     }
 
     /* Will Update on every @Input change */
@@ -75,8 +76,8 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
         this.xAxis = d3.axisBottom(this.xScale);
         this.yAxis = d3.axisLeft(this.yScale);
         this.line = d3.line()
-            .x((d: any) => this.xScale(d.x))
-            .y((d: any) => this.yScale(d.y));
+            .x((d: any) => this.xScale(d.tick))
+            .y((d: any) => this.yScale(d.value));
         console.log('setup complete', this.width, this.height, this.htmlElement);
     }
     
@@ -121,12 +122,14 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
     private populate(): void {
         this.paths = this.svg.append("g")
             .attr('clip-path', "url(" + this.url + "#clip)");
-        this.config.forEach((signal: any) => {
-            this.xScale.domain(d3.extent(signal.dataset, (d: any) => d.x));
-            this.yScale.domain(d3.extent(signal.dataset, (d: any) => d.y));
+        this.displaySensors.forEach((name: string) => {
+            let sensor = this.data[name];
+            let signal = sensor.signals[0];
+            this.xScale.domain(d3.extent(signal.readings, (d: any) => d.tick));
+            this.yScale.domain(d3.extent(signal.readings, (d: any) => d.value));
             this.x0Scale.domain(this.xScale.domain());
             this.paths.append("path")
-                .datum(signal.dataset)
+                .datum(signal.readings)
                 .attr("class", "line")
                 .attr("d", this.line);
         });

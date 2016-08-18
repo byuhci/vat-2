@@ -30,6 +30,10 @@ export interface SignalDict {
     [index: number]: Signal;
 }
 
+export interface Data {
+    [index: string]: Sensor;
+}
+
 export class Signal {
     sensor: string;
     dimIdx: number;
