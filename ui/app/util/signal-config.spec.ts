@@ -1,4 +1,4 @@
-import { SIGNAL_DIM } from './signals-config';
+import { SIGNAL_DIM } from './signal-config';
 
 describe('Signal-Config', () => {
     it('accelerometer xyz', () => {
