@@ -1,4 +1,4 @@
-import { SIGNAL_NAMES } from './signals-config';
+import { SENSOR_NAMES, SIGNAL_DIM } from './signals-config';
 declare var d3: any;
 
 export class Sensor {
@@ -8,7 +8,7 @@ export class Sensor {
 
     constructor(name: string) {
         this.name = name;
-        this.fullName = SIGNAL_NAMES[name];
+        this.fullName = SENSOR_NAMES[name];
         this.signals = {};
     }
 
@@ -43,14 +43,6 @@ export class Sensor {
     }
 }
 
-export interface SignalDict {
-    [index: number]: Signal;
-}
-
-export interface Data {
-    [index: string]: Sensor;
-}
-
 export class Signal {
     sensor: string;
     dimIdx: number;
@@ -71,4 +63,12 @@ export interface Reading {
     tick: number;
     value: number | string;
     time?: number;
+}
+
+export interface SignalDict {
+    [index: number]: Signal;
+}
+
+export interface Data {
+    [index: string]: Sensor;
 }

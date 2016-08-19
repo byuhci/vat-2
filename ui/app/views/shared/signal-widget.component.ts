@@ -131,7 +131,6 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
         this.xScale.domain([extents.xMin, extents.xMax]);
         this.yScale.domain([extents.yMin, extents.yMax]);
         this.x0Scale.domain(this.xScale.domain());
-        console.log('scales', this.xScale, this.yScale);
         // draw lines
         for (let dim in sensor.signals) {
             let signal = sensor.signals[dim];
@@ -141,17 +140,6 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
                 .attr("class", "line")
                 .attr("d", this.line);
         }
-        // this.displaySensors.forEach((name: string) => {
-        //     let sensor = this.data[name];
-        //     let signal = sensor.signals[0];
-        //     this.xScale.domain(d3.extent(signal.readings, (d: any) => d.tick));
-        //     this.yScale.domain(d3.extent(signal.readings, (d: any) => d.value));
-        //     this.x0Scale.domain(this.xScale.domain());
-        //     this.paths.append("path")
-        //         .datum(signal.readings)
-        //         .attr("class", "line")
-        //         .attr("d", this.line);
-        // });
     }
 
     /* Sets up D3 zoom behavior */
@@ -165,7 +153,6 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
         .call(
             d3.zoom()
             .scaleExtent([1, 50])
-            // .translateExtent([0, 0], [this.width, this.height])
             .on("zoom", () => this.zoomed()));
     }
 
