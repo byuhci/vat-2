@@ -77,7 +77,7 @@ export class SignalParseService {
                 {
                     //if sensor is not syslog or error, convert to number
                     let value = row.dimensions[i];
-                    if (sensor.isMessage()) {
+                    if (!sensor.isMessage()) {
                         value = +value;
                     }
                     //create a Reading object, and append to signal

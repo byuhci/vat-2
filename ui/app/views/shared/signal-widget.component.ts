@@ -122,17 +122,36 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
     private populate(): void {
         this.paths = this.svg.append("g")
             .attr('clip-path', "url(" + this.url + "#clip)");
-        this.displaySensors.forEach((name: string) => {
-            let sensor = this.data[name];
-            let signal = sensor.signals[0];
-            this.xScale.domain(d3.extent(signal.readings, (d: any) => d.tick));
-            this.yScale.domain(d3.extent(signal.readings, (d: any) => d.value));
-            this.x0Scale.domain(this.xScale.domain());
+        
+        // for now, only handle displaying one sensor
+        let sensor = this.data[this.displaySensors[0]];
+        let extents = sensor.extents();
+        console.log('extents', extents);
+        // set scale domains
+        this.xScale.domain([extents.xMin, extents.xMax]);
+        this.yScale.domain([extents.yMin, extents.yMax]);
+        this.x0Scale.domain(this.xScale.domain());
+        console.log('scales', this.xScale, this.yScale);
+        // draw lines
+        for (let dim in sensor.signals) {
+            let signal = sensor.signals[dim];
+            console.log(dim, signal);
             this.paths.append("path")
                 .datum(signal.readings)
                 .attr("class", "line")
                 .attr("d", this.line);
-        });
+        }
+        // this.displaySensors.forEach((name: string) => {
+        //     let sensor = this.data[name];
+        //     let signal = sensor.signals[0];
+        //     this.xScale.domain(d3.extent(signal.readings, (d: any) => d.tick));
+        //     this.yScale.domain(d3.extent(signal.readings, (d: any) => d.value));
+        //     this.x0Scale.domain(this.xScale.domain());
+        //     this.paths.append("path")
+        //         .datum(signal.readings)
+        //         .attr("class", "line")
+        //         .attr("d", this.line);
+        // });
     }
 
     /* Sets up D3 zoom behavior */
@@ -153,7 +172,7 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
     private zoomed(): void {
         var t = d3.event.transform;
         this.xScale.domain(t.rescaleX(this.x0Scale).domain());
-        this.svg.select(".line").attr("d", this.line);
+        this.svg.selectAll(".line").attr("d", this.line);
         this.svg.select(".axis--x").call(this.xAxis);
     }
 }

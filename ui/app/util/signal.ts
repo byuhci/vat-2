@@ -1,4 +1,5 @@
 import { SIGNAL_NAMES } from './signals-config';
+declare var d3: any;
 
 export class Sensor {
     name: string;
@@ -23,6 +24,22 @@ export class Sensor {
             return true;
         }
         return false;
+    }
+
+    extents() {
+        let firstSignal = this.signals[0]
+        let result = {
+            xMin: firstSignal.readings[0].tick,
+            xMax: firstSignal.readings[firstSignal.readings.length-1].tick,
+            yMin: 0,
+            yMax: 0}
+        for (let dim in this.signals) {
+            let signal = this.signals[dim];
+            let yExt = d3.extent(signal.readings, (r: Reading) => r.value);
+            result.yMin = Math.min(result.yMin, yExt[0]);
+            result.yMax = Math.max(result.yMax, yExt[1]);
+        }
+        return result;
     }
 }
 
