@@ -44,13 +44,15 @@ export class Sensor {
 }
 
 export class Signal {
+    _sensor: string;
     sensor: string;
     dim: string;
     dimIdx: number;
     readings: Reading[];
 
     constructor(sensor: string, dimIdx: number) {
-        this.sensor = sensor;
+        this._sensor = sensor;
+        this.sensor = SENSOR_NAMES[sensor];
         this.dimIdx = dimIdx;
         this.dim = SIGNAL_DIM(sensor, dimIdx);
         this.readings = [];

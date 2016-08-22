@@ -134,10 +134,12 @@ export class SignalWidgetComponent implements OnInit, OnChanges {
         // draw lines
         for (let dim in sensor.signals) {
             let signal = sensor.signals[dim];
+            let style = "line " + signal.sensor + "--" + signal.dim;
+
             console.log(dim, signal);
             this.paths.append("path")
                 .datum(signal.readings)
-                .attr("class", "line")
+                .attr("class", style)
                 .attr("d", this.line);
         }
     }

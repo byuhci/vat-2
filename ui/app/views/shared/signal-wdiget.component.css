@@ -6,8 +6,20 @@
 
 :host .line {
   fill: none;
-  stroke: steelblue;
+  stroke: black;
   stroke-width: 1.5px;
+}
+
+:host .accelerometer--x {
+    stroke: steelblue;
+}
+
+:host .accelerometer--y {
+    stroke: orange;
+}
+
+:host .accelerometer--z {
+    stroke: rgb(44, 160, 44);
 }
 
 :host .axis text {
