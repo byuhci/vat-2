@@ -12,7 +12,8 @@
   },
   "exclude": [
     "node_modules",
-    "chrome-user"
+    "chrome-user",
+    "systemjs.config.js"
   ]
 }
 
