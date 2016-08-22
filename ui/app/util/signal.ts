@@ -1,4 +1,4 @@
-import { SENSOR_NAMES, SIGNAL_DIM } from './signals-config';
+import { SENSOR_NAMES, SIGNAL_DIM } from './signal-config';
 declare var d3: any;
 
 export class Sensor {

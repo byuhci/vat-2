@@ -15,3 +15,4 @@ ui/app/**/*.map
 .idea/
 # Visual Studio Code
 .vscode/
+*/chrome-user/
