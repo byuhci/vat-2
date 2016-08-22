@@ -27,7 +27,7 @@ export class Sensor {
     }
 
     extents() {
-        let firstSignal = this.signals[0]
+        let firstSignal = this.signals[0];
         let result = {
             xMin: firstSignal.readings[0].tick,
             xMax: firstSignal.readings[firstSignal.readings.length-1].tick,
@@ -45,12 +45,14 @@ export class Sensor {
 
 export class Signal {
     sensor: string;
+    dim: string;
     dimIdx: number;
     readings: Reading[];
 
     constructor(sensor: string, dimIdx: number) {
         this.sensor = sensor;
         this.dimIdx = dimIdx;
+        this.dim = SIGNAL_DIM(sensor, dimIdx);
         this.readings = [];
     }
 

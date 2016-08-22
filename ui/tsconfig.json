@@ -9,6 +9,10 @@
     "removeComments": false,
     "noImplicitAny": false,
     "allowJs": true
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "chrome-user"
+  ]
 }
 
