@@ -21,7 +21,7 @@ import { ViewComponent } from './views/view.component';
 import { NewWorkspaceComponent } from './views/new-workspace.component';
 import { VideoUploaderComponent } from './views/center-pane/video-uploader.component';
 import { SignalUploaderComponent } from './views/signal-pane/signal-uploader.component';
-import { SignalWidgetComponent } from './views/shared/signal-widget.component';
+import { SignalDisplayComponent } from './views/shared/signal-display.component';
 
 import { ProjectService } from './services/projects.service';
 import { SignalParseService } from './services/signals.service';
@@ -43,7 +43,7 @@ import { VideoService } from './services/video.service';
     NewWorkspaceComponent,
     VideoUploaderComponent,
     SignalUploaderComponent,
-    SignalWidgetComponent,
+    SignalDisplayComponent,
     FILE_UPLOAD_DIRECTIVES,
     FileDropDirective
   ],

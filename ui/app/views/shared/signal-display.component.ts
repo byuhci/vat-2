@@ -7,9 +7,9 @@ declare var d3: any;
     moduleId: module.id,
     selector: 'vat-signal',
     template: `<ng-content></ng-content>`,
-    styleUrls: ['./signal-wdiget.component.css']
+    styleUrls: ['./signal-display.component.css']
 })
-export class SignalWidgetComponent implements OnInit, OnChanges {
+export class SignalDisplayComponent implements OnInit, OnChanges {
 
     @Input() data: Data;
     displaySensors = ['A'];
