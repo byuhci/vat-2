@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FileUploader} from 'ng2-file-upload/ng2-file-upload';
 import { SignalParseService } from '../../services/signals.service';
-import { SignalWidgetConfig } from '../shared/widget-config';
 
 const MY_URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
 
