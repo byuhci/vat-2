@@ -14,7 +14,7 @@ export class Sensor {
 
     getSignal(idx: number): Signal {
         if (!(idx in this.signals)) {
-            this.signals[idx] = new Signal(this.name, idx);
+            this.signals[idx] = new Signal(this, idx);
         }
         return this.signals[idx];
     }
@@ -44,17 +44,17 @@ export class Sensor {
 }
 
 export class Signal {
-    _sensor: string;
+    _sensor: Sensor;
     sensor: string;
     dim: string;
     dimIdx: number;
     readings: Reading[];
 
-    constructor(sensor: string, dimIdx: number) {
+    constructor(sensor: Sensor, dimIdx: number) {
         this._sensor = sensor;
-        this.sensor = SENSOR_NAMES[sensor];
+        this.sensor = SENSOR_NAMES[sensor.name];
         this.dimIdx = dimIdx;
-        this.dim = SIGNAL_DIM(sensor, dimIdx);
+        this.dim = SIGNAL_DIM(sensor.name, dimIdx);
         this.readings = [];
     }
 

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnChanges, Input, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Data } from './../../util/signal';
+import { Signal } from './../../util/signal';
 declare var d3: any;
 
 @Component({
@@ -11,7 +11,7 @@ declare var d3: any;
 })
 export class SignalDisplayComponent implements OnInit, OnChanges {
 
-    @Input() data: Data;
+    @Input() signals: Signal[];
     displaySensors = ['A'];
 
     private host;        // D3 object referencing host dom object
@@ -37,7 +37,7 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
     }
 
     ngOnInit() { 
-        console.log('received input', this.data);
+        console.log('received input', this.signals);
     }
 
     /* Will Update on every @Input change */
@@ -123,8 +123,9 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
         this.paths = this.svg.append("g")
             .attr('clip-path', "url(" + this.url + "#clip)");
         
-        // for now, only handle displaying one sensor
-        let sensor = this.data[this.displaySensors[0]];
+        // TODO: create multiple axes for different sensors?
+        // for now, just grab the extents from the first signal
+        let sensor = this.signals[0]._sensor;
         let extents = sensor.extents();
         console.log('extents', extents);
         // set scale domains
@@ -132,11 +133,10 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
         this.yScale.domain([extents.yMin, extents.yMax]);
         this.x0Scale.domain(this.xScale.domain());
         // draw lines
-        for (let dim in sensor.signals) {
-            let signal = sensor.signals[dim];
+        for (let signal of this.signals) {
             let style = "line " + signal.sensor + "--" + signal.dim;
 
-            console.log(dim, signal);
+            console.log(signal.dim, signal);
             this.paths.append("path")
                 .datum(signal.readings)
                 .attr("class", style)
