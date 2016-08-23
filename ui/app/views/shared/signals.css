@@ -1,0 +1,11 @@
+:host .accelerometer--x {
+    stroke: steelblue;
+}
+
+:host .accelerometer--y {
+    stroke: orange;
+}
+
+:host .accelerometer--z {
+    stroke: rgb(44, 160, 44);
+}

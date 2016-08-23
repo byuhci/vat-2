@@ -7,7 +7,7 @@ declare var d3: any;
     moduleId: module.id,
     selector: 'vat-signal',
     template: `<ng-content></ng-content>`,
-    styleUrls: ['./signal-display.component.css']
+    styleUrls: ['./signal-display.component.css', './signals.css']
 })
 export class SignalDisplayComponent implements OnInit, OnChanges {
 
