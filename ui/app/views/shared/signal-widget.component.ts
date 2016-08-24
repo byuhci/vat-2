@@ -4,7 +4,8 @@ import { Data, Signal } from './../../util/signal';
 @Component({
     moduleId: module.id,
     selector: 'vat-signal-widget',
-    templateUrl: 'signal-widget.component.html'
+    templateUrl: 'signal-widget.component.html',
+    styleUrls: ['signal-widget.component.css']
 })
 export class SignalWidgetComponent implements OnInit {
     @Input() data: Data;
