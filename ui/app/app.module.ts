@@ -27,6 +27,7 @@ import { SignalWidgetComponent } from './views/shared/signal-widget.component';
 import { SignalFilterMenuComponent } from './views/shared/signal-filter-menu.component';
 
 import { DataSensorPipe } from './pipes/data-sensor.pipe';
+import { CapitalizePipe } from './pipes/capitalize.pipe';
 
 import { ProjectService } from './services/projects.service';
 import { SignalParseService, SignalConversionService } from './services/signals.service';
@@ -54,7 +55,8 @@ import { VideoService } from './services/video.service';
     FILE_UPLOAD_DIRECTIVES,
     FileDropDirective,
     POPOVER_DIRECTIVES,
-    DataSensorPipe
+    DataSensorPipe,
+    CapitalizePipe
   ],
   providers: [
     SignalParseService,

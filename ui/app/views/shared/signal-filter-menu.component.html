@@ -1,6 +1,8 @@
 <popover-content #pop title="Display Signals:" [closeOnClickOutside]="true" placement="right">
     <div class="list-group">
-        <div class="list-group-item" *ngFor="let sensor of (sensors | dataSensor)"><label>{{sensor.fullName}}</label></div>
+        <div class="list-group-item" *ngFor="let sensor of (sensors | dataSensor)">
+            <label>{{sensor.fullName | capitalize}}</label>
+        </div>
     </div>
 </popover-content>
 
