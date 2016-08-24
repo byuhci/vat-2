@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DomSanitizationService, SafeUrl } from '@angular/platform-browser';
-import { Sensor, Signal } from './../util/signal';
+import { Sensor, Signal, Data } from './../util/signal';
 
 // allows use of d3 scripts without compiler complaining
 declare var d3: any;
@@ -15,8 +15,8 @@ export class SignalParseService {
             console.log('via FileReader', file);
             this.fileToString(file)
                 .then(str => this.toRows(str))
-                .then(rows => this.toSensors(rows))
-                .then(signals => resolve(signals))
+                .then(rows => this.toData(rows))
+                .then(data => resolve(data))
                 .catch(err => reject(err));
         });  
     }
@@ -54,7 +54,7 @@ export class SignalParseService {
         });
     }
 
-    private toSensors(rows) {
+    private toData(rows) {
         return new Promise((resolve) => {
             let sensors = {};
 
@@ -87,6 +87,23 @@ export class SignalParseService {
             }
             console.log('sensors:', sensors);
             resolve(sensors);
+        });
+    }
+}
+
+
+@Injectable()
+export class SignalConversionService {
+
+    constructor() { }
+
+    public dataToSensors(data: Data): Promise<Sensor[]> {
+        return new Promise((resolve, reject) => {
+            let result: Sensor[] = [];
+            for (let key in data) {
+                result.push(data[key]);
+            }
+            resolve(result);
         });
     }
 }

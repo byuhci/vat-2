@@ -1,0 +1,11 @@
+:host .popover-content {
+    padding: 0px;
+}
+
+:host .list-group {
+    margin-bottom: 0px;
+}
+
+span.glyphicon {
+    cursor: pointer;
+}
