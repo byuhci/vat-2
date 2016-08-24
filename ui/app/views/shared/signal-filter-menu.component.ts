@@ -10,7 +10,7 @@ import { SignalConversionService } from './../../services/signals.service';
 })
 export class SignalFilterMenuComponent implements OnChanges {
     @Input() data: Data;
-    sensors: Sensor[];
+    sensors: Sensor[] = [];
 
     constructor(private converter: SignalConversionService) { }
 
