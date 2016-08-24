@@ -26,7 +26,11 @@
         });
 
         // #3. Import the spec file explicitly
-        System.import('app/util/signal-config.spec')
+        Promise.all([
+            System.import('app/util/signal-config.spec'),
+            System.import('app/pipes/capitalize.pipe.spec')
+        ])
+        
 
         // #4. wait for all imports to load ...
         //     then re-execute `window.onload` which
