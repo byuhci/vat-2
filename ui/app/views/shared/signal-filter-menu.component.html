@@ -2,6 +2,10 @@
     <div class="list-group">
         <div class="list-group-item" *ngFor="let sensor of (sensors | dataSensor)">
             <label>{{sensor.fullName | capitalize}}</label>
+
+            <div class="dims">
+                <label class="checkbox-inline" *ngFor="let signal of sensor.signals"><input type="checkbox" value="">{{signal.dim}}</label>
+            </div>
         </div>
     </div>
 </popover-content>

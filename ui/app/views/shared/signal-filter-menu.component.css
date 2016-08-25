@@ -2,8 +2,17 @@
     padding: 0px;
 }
 
+:host .popover {
+    max-width: initial;
+}
+
 :host .list-group {
     margin-bottom: 0px;
+}
+
+:host .dims {
+    float: right;
+    margin-left: 4em;
 }
 
 span.glyphicon {
