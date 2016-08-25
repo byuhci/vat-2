@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, Input, ElementRef } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, ElementRef, HostListener } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Signal } from './../../util/signal';
 declare var d3: any;
@@ -41,6 +41,7 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
     }
 
     /* Will Update on every @Input change */
+    @HostListener('window:resize', [])
     ngOnChanges() {
         console.log('registering changes');
         this.setUrl();
