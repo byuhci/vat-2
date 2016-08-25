@@ -4,19 +4,20 @@ declare var d3: any;
 export class Sensor {
     name: string;
     fullName: string;
-    signals: SignalDict;
+    _sigs: SignalDict;
+    get signals(): Signal[] {return Object.keys(this._sigs).map(key => this._sigs[key]);}
 
     constructor(name: string) {
         this.name = name;
         this.fullName = SENSOR_NAMES[name];
-        this.signals = {};
+        this._sigs = {};
     }
 
     getSignal(idx: number): Signal {
-        if (!(idx in this.signals)) {
-            this.signals[idx] = new Signal(this, idx);
+        if (!(idx in this._sigs)) {
+            this._sigs[idx] = new Signal(this, idx);
         }
-        return this.signals[idx];
+        return this._sigs[idx];
     }
 
     isMessage(): boolean {
@@ -27,14 +28,14 @@ export class Sensor {
     }
 
     extents() {
-        let firstSignal = this.signals[0];
+        let firstSignal = this._sigs[0];
         let result = {
             xMin: firstSignal.readings[0].tick,
             xMax: firstSignal.readings[firstSignal.readings.length-1].tick,
             yMin: 0,
             yMax: 0}
-        for (let dim in this.signals) {
-            let signal = this.signals[dim];
+        for (let dim in this._sigs) {
+            let signal = this._sigs[dim];
             let yExt = d3.extent(signal.readings, (r: Reading) => r.value);
             result.yMin = Math.min(result.yMin, yExt[0]);
             result.yMax = Math.max(result.yMax, yExt[1]);

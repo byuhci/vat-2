@@ -18,12 +18,6 @@ export class SignalWidgetComponent implements OnInit {
     }
 
     private getSignals(): Signal[] {
-        let result: Signal[] = [];
-        // TODO: don't hard-code signals!
-        let signals = this.data['A'].signals;
-        for (let dim in signals) {
-            result.push(signals[dim]);
-        }
-        return result;
+        return this.data['A'].signals;
     }
 }
