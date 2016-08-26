@@ -128,7 +128,7 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
         if (this.signals && this.signals[0]) {
             let sensor = this.signals[0]._sensor;
             let extents = sensor.extents();
-            console.log('extents', extents);
+            console.debug('extents', extents);
             // set scale domains
             this.xScale.domain([extents.xMin, extents.xMax]);
             this.yScale.domain([extents.yMin, extents.yMax]);
@@ -137,7 +137,7 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
             for (let signal of this.signals) {
                 let style = "line " + signal.sensor + "--" + signal.dim;
 
-                console.log(signal.dim, signal);
+                console.debug(signal.dim, signal);
                 this.paths.append("path")
                     .datum(signal.readings)
                     .attr("class", style)
@@ -148,7 +148,6 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
 
     /* Sets up D3 zoom behavior */
     private setupZoom(): void {
-        console.log('setting up zoom', this.svg);
         this.svg.append("rect")
         .attr("class", "zoom")
         .attr("width", this.width)

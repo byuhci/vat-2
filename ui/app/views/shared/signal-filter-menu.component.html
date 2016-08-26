@@ -3,8 +3,8 @@
         <div class="list-group-item" *ngFor="let sensor of (sensors | dataSensor)">
             <label>{{sensor.fullName | capitalize}}</label>
 
-            <div class="dims">
-                <label class="checkbox-inline" *ngFor="let signal of sensor.signals"><input type="checkbox" value="">{{signal.dim}}</label>
+            <div class="dims" *ngIf="_display">
+                <label class="checkbox-inline" *ngFor="let signal of sensor.signals"><input type="checkbox" [checked]="check(sensor.name, signal.dim)">{{signal.dim}}</label>
             </div>
         </div>
     </div>

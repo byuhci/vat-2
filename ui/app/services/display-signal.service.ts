@@ -6,8 +6,7 @@ import { DisplaySignals } from './../util/signal';
 @Injectable()
 export class DisplaySignalService {
 
-    private DEFAULT_DISPLAY: DisplaySignals =
-        {"A": {"x": true, "y": true, "z": true}}
+    DEFAULT_DISPLAY: DisplaySignals = {"A": {"x": true, "y": true, "z": true}}
 
     constructor() { }
 

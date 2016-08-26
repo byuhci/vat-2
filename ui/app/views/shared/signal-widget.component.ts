@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Data, Signal, DisplaySignals, SignalStatus } from './../../util/signal';
+import { Data, Signal, DisplaySignals } from './../../util/signal';
 import { DisplaySignalService } from './../../services/display-signal.service';
 import { SignalConversionService } from './../../services/signals.service';
 
