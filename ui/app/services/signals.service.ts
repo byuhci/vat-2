@@ -107,16 +107,24 @@ export class SignalConversionService {
         });
     }
 
-    // public displayToSignals(display: DisplaySignals, data: Data): Promise<Signal[]> {
-    //     return new Promise((resolve, reject) => {
-    //         try {
-    //             for (let key in display) {
+    public sensorsToSignals(sensors: Sensor[]): Promise<Signal[]> {
+        return new Promise((resolve) => {
+            let result: Signal[] = [];
+            for (let sensor of sensors) {
+                result = result.concat(sensor.signals);
+            }
+            resolve(result);
+        });
 
-    //             }
-    //         }
-    //         catch(err) {
-    //             reject(err);
-    //         }
-    //     });
-    // }
+    }
+
+    public displayToSignals(display: DisplaySignals, data: Data): Promise<Signal[]> {
+        return new Promise((resolve, reject) => {
+                this.dataToSensors(data)
+                    .then(sensors => this.sensorsToSignals(sensors))
+                    .then(signals => resolve(signals.filter(
+                        signal => display[signal._sensor.name] && display[signal._sensor.name][signal.dim])))
+                    .catch(err => reject(err));
+        });
+    }
 }
