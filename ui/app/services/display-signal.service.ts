@@ -6,6 +6,9 @@ import { DisplaySignals } from './../util/signal';
 @Injectable()
 export class DisplaySignalService {
 
+    private DEFAULT_DISPLAY: DisplaySignals =
+        {"A": {"x": true, "y": true, "z": true}}
+
     constructor() { }
 
     // Observable sources
@@ -13,4 +16,14 @@ export class DisplaySignalService {
 
     // Observable streams
     displayed$ = this.displaySource.asObservable();
+
+    // Updating function
+    update(signals: DisplaySignals) {
+        console.log('updating display signals', signals);
+        this.displaySource.next(signals);
+    }
+
+    init(){
+        this.update(this.DEFAULT_DISPLAY);
+    }
 }

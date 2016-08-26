@@ -79,7 +79,6 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
         this.line = d3.line()
             .x((d: any) => this.xScale(d.tick))
             .y((d: any) => this.yScale(d.value));
-        console.log('setup complete', this.width, this.height, this.htmlElement);
     }
     
     /* Builds the SVG Element */
@@ -126,23 +125,25 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
         
         // TODO: create multiple axes for different sensors?
         // for now, just grab the extents from the first signal
-        let sensor = this.signals[0]._sensor;
-        let extents = sensor.extents();
-        console.log('extents', extents);
-        // set scale domains
-        this.xScale.domain([extents.xMin, extents.xMax]);
-        this.yScale.domain([extents.yMin, extents.yMax]);
-        this.x0Scale.domain(this.xScale.domain());
-        // draw lines
-        for (let signal of this.signals) {
-            let style = "line " + signal.sensor + "--" + signal.dim;
+        if (this.signals && this.signals[0]) {
+            let sensor = this.signals[0]._sensor;
+            let extents = sensor.extents();
+            console.log('extents', extents);
+            // set scale domains
+            this.xScale.domain([extents.xMin, extents.xMax]);
+            this.yScale.domain([extents.yMin, extents.yMax]);
+            this.x0Scale.domain(this.xScale.domain());
+            // draw lines
+            for (let signal of this.signals) {
+                let style = "line " + signal.sensor + "--" + signal.dim;
 
-            console.log(signal.dim, signal);
-            this.paths.append("path")
-                .datum(signal.readings)
-                .attr("class", style)
-                .attr("d", this.line);
-        }
+                console.log(signal.dim, signal);
+                this.paths.append("path")
+                    .datum(signal.readings)
+                    .attr("class", style)
+                    .attr("d", this.line);
+            }
+        }   
     }
 
     /* Sets up D3 zoom behavior */

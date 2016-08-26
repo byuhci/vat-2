@@ -12,20 +12,22 @@ import { SignalConversionService } from './../../services/signals.service';
 export class SignalWidgetComponent implements OnInit {
     @Input() data: Data;
     displaySignals: Signal[];
+    _display;
 
     constructor(private displayService: DisplaySignalService,
-                private conversionService: SignalConversionService) {
-        //displayService.displayed$.subscribe
-    }
+                private conversionService: SignalConversionService) { }
 
     ngOnInit() {
-        this.displaySignals = this.getSignals();
-        let defaultDisplay: DisplaySignals = {"A": {"x": true, "y": true, "z": true}, "G": {"x": false, "y": false}};
-        let sug = this.conversionService.displayToSignals(defaultDisplay, this.data);
-        sug.then(result => console.log("suggested signals", result));
-    }
-
-    private getSignals(): Signal[] {
-        return this.data['A'].signals; 
+        console.log('init widget');
+        this.displayService.displayed$.subscribe(
+            display => {
+                this.conversionService.displayToSignals(display, this.data)
+                    .then(signals => {
+                        console.log('setting display signals', signals);
+                        this.displaySignals = signals;
+                    });
+            });
+        this.displayService.init();
+        console.log('subscribed!', this.displaySignals);
     }
 }
