@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DomSanitizationService, SafeUrl } from '@angular/platform-browser';
-import { Sensor, Signal, Data } from './../util/signal';
+import { Sensor, Signal, Data, DisplaySignals } from './../util/signal';
 
 // allows use of d3 scripts without compiler complaining
 declare var d3: any;
@@ -98,7 +98,7 @@ export class SignalConversionService {
     constructor() { }
 
     public dataToSensors(data: Data): Promise<Sensor[]> {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             let result: Sensor[] = [];
             for (let key in data) {
                 result.push(data[key]);
@@ -106,4 +106,17 @@ export class SignalConversionService {
             resolve(result);
         });
     }
+
+    // public displayToSignals(display: DisplaySignals, data: Data): Promise<Signal[]> {
+    //     return new Promise((resolve, reject) => {
+    //         try {
+    //             for (let key in display) {
+
+    //             }
+    //         }
+    //         catch(err) {
+    //             reject(err);
+    //         }
+    //     });
+    // }
 }

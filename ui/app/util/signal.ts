@@ -77,3 +77,11 @@ export interface SignalDict {
 export interface Data {
     [index: string]: Sensor;
 }
+
+export interface SignalStatus {
+    [index: string]: boolean;
+}
+
+export interface DisplaySignals {
+    [index: string]: SignalStatus;
+}
