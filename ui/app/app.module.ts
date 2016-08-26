@@ -32,6 +32,7 @@ import { CapitalizePipe } from './pipes/capitalize.pipe';
 import { ProjectService } from './services/projects.service';
 import { SignalParseService, SignalConversionService } from './services/signals.service';
 import { VideoService } from './services/video.service';
+import { DisplaySignalService } from './services/display-signal.service';
 
 @NgModule({
   imports: [
@@ -63,6 +64,7 @@ import { VideoService } from './services/video.service';
     SignalConversionService,
     VideoService,
     ProjectService,
+    DisplaySignalService,
     { provide: XHRBackend, useClass: InMemoryBackendService }, // in-mem server
     { provide: SEED_DATA,  useClass: MockDataService }     // in-mem server data
   ],
