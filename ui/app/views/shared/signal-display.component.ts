@@ -11,7 +11,11 @@ declare var d3: any;
 })
 export class SignalDisplayComponent implements OnInit, OnChanges {
 
-    @Input() signals: Signal[];
+    // always returns an array, even if the Input property has not been initialized yet
+    @Input("signals") _signals: Signal[];
+    get signals(): Signal[] {return this._signals || [];}
+
+    private sensors: Set<string>;
 
     private host;        // D3 object referencing host dom object
     private svg;         // SVG in which we will print our chart
@@ -20,15 +24,15 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
     private height;      // Component height
     private xScale;      // D3 scale in X
     private x0Scale;     // Original scale for X
-    private yScale;      // D3 scale in Y
+    private yScales;      // D3 scale in Y
     private xAxis;       // D3 X Axis
-    private yAxis;       // D3 Y Axis
+    private yAxes;       // D3 Y Axis
     private htmlElement; // Host HTMLElement
-    private line;        // D3 Line
+    private lines;        // D3 Line
     private view;        // View Container for the chart
     private paths;       // Container for all line paths
     private url;         // The relative url path from root
-    
+ 
 
     constructor(private element: ElementRef, private route: ActivatedRoute) { 
         this.htmlElement = this.element.nativeElement;
@@ -67,17 +71,48 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
 
     /* Sets up the chart container */
     private setup(): void {
-        this.margin = { top: 20, right: 20, bottom: 40, left: 80 };
+        // set width and height
+        this.margin = { top: 20, right: 80, bottom: 40, left: 70 };
         this.width = this.htmlElement.clientWidth - this.margin.left - this.margin.right;
         this.height = this.htmlElement.clientHeight - this.margin.top - this.margin.bottom;
+
+        // initialize local variable for iterating over y-axes
+        this.sensors = new Set(this.signals.map(sig => sig.sensor));
+        console.log('displayed sensors', this.sensors);
+
+        // x-scale
         this.xScale = d3.scaleLinear().range([0, this.width]);
         this.x0Scale = d3.scaleLinear().range([0, this.width]);
-        this.yScale = d3.scaleLinear().range([this.height, 0]);
+        
+        // y-scales
+        this.yScales = {};
+        this.sensors.forEach(sensor => {
+            this.yScales[sensor] = d3.scaleLinear().range([this.height, 0]);
+        });
+
+        // x-axis
         this.xAxis = d3.axisBottom(this.xScale);
-        this.yAxis = d3.axisLeft(this.yScale);
-        this.line = d3.line()
-            .x((d: any) => this.xScale(d.tick))
-            .y((d: any) => this.yScale(d.value));
+
+        // y-axes
+        this.yAxes = {};
+        let left: boolean = true;
+        this.sensors.forEach(sensor => {
+            if (left) {
+                this.yAxes[sensor] = d3.axisLeft(this.yScales[sensor]);
+            }
+            else {
+                this.yAxes[sensor] = d3.axisRight(this.yScales[sensor]);
+            }
+            left = !left;
+        });
+
+        // line functions
+        this.lines = {};
+        this.sensors.forEach(sensor => {
+            this.lines[sensor] = d3.line()
+                                    .x((d: any) => this.xScale(d.tick))
+                                    .y((d: any) => this.yScales[sensor](d.value));
+        })
     }
     
     /* Builds the SVG Element */
@@ -110,11 +145,20 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
             .call(this.xAxis);   
     }
     
-    /* Draws the Y Axis */
+    /** Draws the Y Axes, one for each sensor.
+     * Note: this code currently only scales up to 4 axes total.
+    */
     private drawYAxis(): void {
-        this.svg.append("g")
-            .attr("class", "axis axis--y")
-            .call(this.yAxis);
+        let i = 0;
+        this.sensors.forEach(sensor => {
+            let axis = this.svg.append("g").attr("class", "axis axis--y axis--"+sensor);
+            // put the second and third axes on the right, the first and fourth on the left
+            if (i == 1 || i == 2) {
+                axis.attr("transform", "translate( " + this.width + ", 0 )");
+            }
+            axis.call(this.yAxes[sensor]);
+            i++;
+        });
     }
 
     /* Populates datasets into line graphs */
@@ -122,46 +166,62 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
         this.paths = this.svg.append("g")
             .attr('clip-path', "url(" + this.url + "#clip)");
         
-        // TODO: create multiple axes for different sensors?
-        // for now, just grab the extents from the first signal
-        if (this.signals && this.signals[0]) {
-            let sensor = this.signals[0]._sensor;
-            let extents = sensor.extents();
-            console.debug('extents', extents);
-            // set scale domains
-            this.xScale.domain([extents.xMin, extents.xMax]);
-            this.yScale.domain([extents.yMin, extents.yMax]);
-            this.x0Scale.domain(this.xScale.domain());
-            // draw lines
-            for (let signal of this.signals) {
-                let style = "line " + signal.sensor + "--" + signal.dim;
+        let hasXScale: boolean = false;
+        let yDomains: Set<string> = new Set<string>();
 
-                console.debug(signal.dim, signal);
-                this.paths.append("path")
-                    .datum(signal.readings)
-                    .attr("class", style)
-                    .attr("d", this.line);
+        // draw lines
+        for (let signal of this.signals) {
+            let extents = signal._sensor.extents();
+
+            // set x-scale domains
+            if (!hasXScale) {
+                console.debug("setting x-scale domain");
+                this.xScale.domain([extents.xMin, extents.xMax]);
+                this.x0Scale.domain(this.xScale.domain());
+                hasXScale = true;
             }
-        }   
+            // set y-scale domains
+            if (!(signal.sensor in yDomains)) {
+                console.debug("setting y-scale domain for:", signal.sensor)
+                this.yScales[signal.sensor].domain([extents.yMin, extents.yMax]);
+                yDomains.add(signal.sensor);
+            }
+
+            let style = "line " + signal.sensor + "--" + signal.dim + " line--" + signal.sensor;
+
+            console.debug(signal.dim, signal);
+            this.paths.append("path")
+                .datum(signal.readings)
+                .attr("class", style)
+                .attr("d", this.lines[signal.sensor]);
+        } 
     }
 
     /* Sets up D3 zoom behavior */
     private setupZoom(): void {
-        this.svg.append("rect")
+        let zoom = d3.zoom()
+            .scaleExtent([1, 50])
+            .on("zoom", () => this.zoomed());
+        let rect = this.svg.append("rect")
         .attr("class", "zoom")
         .attr("width", this.width)
         .attr("height", this.height)
         .style("pointer-events", "all")
-        .call(
-            d3.zoom()
-            .scaleExtent([1, 50])
-            .on("zoom", () => this.zoomed()));
+        .call(zoom);
+
+        zoom.scaleTo(rect, 2);
     }
 
     private zoomed(): void {
         var t = d3.event.transform;
         this.xScale.domain(t.rescaleX(this.x0Scale).domain());
-        this.svg.selectAll(".line").attr("d", this.line);
+        this.sensors.forEach(sensor => {
+            let selector = ".line--" + sensor;
+            let sel = this.svg.selectAll(selector);
+            console.log('zoom', sensor, sel, selector);
+            sel.attr("d", this.lines[sensor]);
+        });
+        //this.svg.selectAll(".line").attr("d", this.line);
         this.svg.select(".axis--x").call(this.xAxis);
     }
 }
