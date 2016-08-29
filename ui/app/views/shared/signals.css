@@ -9,3 +9,19 @@
 :host .accelerometer--z {
     stroke: rgb(44, 160, 44);
 }
+
+:host .gyroscope--x {
+    stroke: purple;
+}
+
+:host .gyroscope--y {
+    stroke: forestgreen;
+}
+
+:host .gyroscope--z {
+    stroke: lightcoral;
+}
+
+:host .voltage--voltage {
+    stroke: darkslategrey;
+}

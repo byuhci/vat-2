@@ -12,7 +12,6 @@ declare var d3: any;
 export class SignalDisplayComponent implements OnInit, OnChanges {
 
     @Input() signals: Signal[];
-    displaySensors = ['A'];
 
     private host;        // D3 object referencing host dom object
     private svg;         // SVG in which we will print our chart
