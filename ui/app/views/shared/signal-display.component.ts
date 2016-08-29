@@ -72,7 +72,7 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
     /* Sets up the chart container */
     private setup(): void {
         // set width and height
-        this.margin = { top: 20, right: 80, bottom: 40, left: 70 };
+        this.margin = { top: 20, right: 40, bottom: 40, left: 50 };
         this.width = this.htmlElement.clientWidth - this.margin.left - this.margin.right;
         this.height = this.htmlElement.clientHeight - this.margin.top - this.margin.bottom;
 
@@ -156,7 +156,7 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
             if (i == 1 || i == 2) {
                 axis.attr("transform", "translate( " + this.width + ", 0 )");
             }
-            axis.call(this.yAxes[sensor]);
+            axis.call(this.yAxes[sensor].tickFormat(d3.format(".2s")));
             i++;
         });
     }
