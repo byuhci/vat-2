@@ -18,7 +18,7 @@ export class DisplaySignalService {
 
     // Updating function
     update(signals: DisplaySignals) {
-        console.log('updating display signals', signals);
+        console.debug('updating display signals', signals);
         this.displaySource.next(signals);
     }
 
