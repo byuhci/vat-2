@@ -32,6 +32,8 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
     private view;        // View Container for the chart
     private paths;       // Container for all line paths
     private url;         // The relative url path from root
+    private zoom;        // The zoom behavior
+    private portal;  // The zoom portal in the background to register zoom events
  
 
     constructor(private element: ElementRef, private route: ActivatedRoute) { 
@@ -53,7 +55,7 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
         this.populate();
         this.drawXAxis();
         this.drawYAxis();
-        this.setupZoom();
+        this.setInitialZoom();
     }
 
     /* TODO: This is a hack! Try to find some other way around this problem. */
@@ -69,7 +71,7 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
         }
     }
 
-    /* Sets up the chart container */
+    /** Sets up the chart container */
     private setup(): void {
         // set width and height
         this.margin = { top: 20, right: 40, bottom: 40, left: 50 };
@@ -112,10 +114,10 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
             this.lines[sensor] = d3.line()
                                     .x((d: any) => this.xScale(d.tick))
                                     .y((d: any) => this.yScales[sensor](d.value));
-        })
+        });
     }
     
-    /* Builds the SVG Element */
+    /** Builds the SVG Element */
     private buildSVG(): void {
         this.host.html('');
         this.svg = this.host.append('svg')
@@ -128,40 +130,27 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
             .append("rect")
             .attr("width", this.width - 1)
             .attr("height", this.height - 1);
+
         this.view = this.svg.append("rect")
             .attr("class", "view")
             .attr("x", 0.5)
             .attr("y", 0.5)
             .attr("width", this.width - 1)
             .attr("height", this.height - 1);
-    }
-    
-    /* Draws the X Axis */
-    private drawXAxis(): void {
         
-        this.svg.append("g")
-            .attr("class", "axis axis--x")
-            .attr("transform", "translate(0, " + this.height + ")")
-            .call(this.xAxis);   
-    }
-    
-    /** Draws the Y Axes, one for each sensor.
-     * Note: this code currently only scales up to 4 axes total.
-    */
-    private drawYAxis(): void {
-        let i = 0;
-        this.sensors.forEach(sensor => {
-            let axis = this.svg.append("g").attr("class", "axis axis--y axis--"+sensor);
-            // put the second and third axes on the right, the first and fourth on the left
-            if (i == 1 || i == 2) {
-                axis.attr("transform", "translate( " + this.width + ", 0 )");
-            }
-            axis.call(this.yAxes[sensor].tickFormat(d3.format(".2s")));
-            i++;
-        });
+        this.zoom = d3.zoom()
+            .scaleExtent([1, 50])
+            .on("zoom", () => this.zoomed());
+
+        this.portal = this.svg.append("rect")
+            .attr("class", "zoom")
+            .attr("width", this.width)
+            .attr("height", this.height)
+            .style("pointer-events", "all")
+            .call(this.zoom);
     }
 
-    /* Populates datasets into line graphs */
+    /** Populates datasets into line graphs */
     private populate(): void {
         this.paths = this.svg.append("g")
             .attr('clip-path', "url(" + this.url + "#clip)");
@@ -193,23 +182,39 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
             this.paths.append("path")
                 .datum(signal.readings)
                 .attr("class", style)
-                .attr("d", this.lines[signal.sensor]);
+                .attr("d", this.lines[signal.sensor])
+                .on("mousemove", () => this.mouseover(signal), true);
         } 
     }
 
-    /* Sets up D3 zoom behavior */
-    private setupZoom(): void {
-        let zoom = d3.zoom()
-            .scaleExtent([1, 50])
-            .on("zoom", () => this.zoomed());
-        let rect = this.svg.append("rect")
-        .attr("class", "zoom")
-        .attr("width", this.width)
-        .attr("height", this.height)
-        .style("pointer-events", "all")
-        .call(zoom);
+    /** Draws the X Axis */
+    private drawXAxis(): void {
+        
+        this.svg.append("g")
+            .attr("class", "axis axis--x")
+            .attr("transform", "translate(0, " + this.height + ")")
+            .call(this.xAxis);   
+    }
+    
+    /** Draws the Y Axes, one for each sensor.
+     * Note: this code currently only scales up to 4 axes total.
+    */
+    private drawYAxis(): void {
+        let i = 0;
+        this.sensors.forEach(sensor => {
+            let axis = this.svg.append("g").attr("class", "axis axis--y axis--"+sensor);
+            // put the second and third axes on the right, the first and fourth on the left
+            if (i == 1 || i == 2) {
+                axis.attr("transform", "translate( " + this.width + ", 0 )");
+            }
+            axis.call(this.yAxes[sensor].tickFormat(d3.format(".2s")));
+            i++;
+        });
+    }
 
-        zoom.scaleTo(rect, 2);
+    /** Sets up the initial zoom scale */
+    private setInitialZoom(): void {
+        this.zoom.scaleTo(this.portal, 2);
     }
 
     private zoomed(): void {
@@ -218,10 +223,14 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
         this.sensors.forEach(sensor => {
             let selector = ".line--" + sensor;
             let sel = this.svg.selectAll(selector);
-            console.log('zoom', sensor, sel, selector);
+            console.debug('zoom', sensor, sel, selector);
             sel.attr("d", this.lines[sensor]);
         });
         //this.svg.selectAll(".line").attr("d", this.line);
         this.svg.select(".axis--x").call(this.xAxis);
+    }
+
+    private mouseover(signal: Signal) {
+        console.log('d', signal);
     }
 }

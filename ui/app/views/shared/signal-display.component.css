@@ -8,6 +8,7 @@
   fill: none;
   stroke: black;
   stroke-width: 1.5px;
+  pointer-events: all;
 }
 
 :host .axis text {
