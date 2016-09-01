@@ -11,6 +11,16 @@
   stroke-width: 1.5px;
 }
 
+:host .line--hover {
+    stroke-width: 2px;
+    opacity: 1.0;
+}
+
+:host .line--fade {
+    stroke-width: 1.4px;
+    opacity: 0.5;
+}
+
 :host .axis text {
     font-size: 11px;
     fill: rgba(0, 0, 0, 0.9);

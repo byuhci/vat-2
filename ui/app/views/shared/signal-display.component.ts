@@ -185,14 +185,16 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
                 yDomains.add(signal.sensor);
             }
 
-            let style = "line " + signal.sensor + "--" + signal.dim + " line--" + signal.sensor;
+            // ex: class="line gyroscope--x line--gyroscope"
+            let style = "line " + signal.name + " line--" + signal.sensor;
 
             console.debug(signal.dim, signal);
             this.paths.append("path")
                 .datum(signal.readings)
                 .attr("class", style)
                 .attr("d", this.lines[signal.sensor])
-                .on("mousemove", () => this.mouseover(signal), true);
+                .on("mouseover", () => this.mouseover(signal))
+                .on("mouseout", () => this.mouseout());
         } 
     }
 
@@ -221,7 +223,7 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
         });
     }
 
-    /** Sets up the initial zoom scale */
+    /** Sets up the initial zoom scale and position */
     private setInitialZoom(): void {
         this.zoom.scaleTo(this.portal, 2);
         this.zoom.translateBy(this.portal, this.width);
@@ -239,6 +241,16 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
     }
 
     private mouseover(signal: Signal) {
-        //console.log('d', signal);
+        // highlight the moused-over signal
+        d3.select('.' + signal.name).classed('line--hover', true);
+        // fade the rest
+        d3.selectAll('.line:not(.' + signal.name + ')').classed('line--fade', true);
+    }
+
+    private mouseout() {
+        // turn off hover and fade effects
+        d3.selectAll(".line")
+            .classed("line--hover", false)
+            .classed("line--fade", false);
     }
 }
