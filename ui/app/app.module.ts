@@ -9,6 +9,7 @@ import { InMemoryBackendService, SEED_DATA } from 'angular2-in-memory-web-api';
 import { MockDataService } from './services/mock-data.service';
 
 import { FILE_UPLOAD_DIRECTIVES, FileDropDirective } from 'ng2-file-upload/ng2-file-upload';
+import { POPOVER_DIRECTIVES } from 'ng2-popover';
 
 import { AppComponent }   from './app.component';
 import { routing }        from './app.routing';
@@ -21,11 +22,17 @@ import { ViewComponent } from './views/view.component';
 import { NewWorkspaceComponent } from './views/new-workspace.component';
 import { VideoUploaderComponent } from './views/center-pane/video-uploader.component';
 import { SignalUploaderComponent } from './views/signal-pane/signal-uploader.component';
+import { SignalDisplayComponent } from './views/shared/signal-display.component';
 import { SignalWidgetComponent } from './views/shared/signal-widget.component';
+import { SignalFilterMenuComponent } from './views/shared/signal-filter-menu.component';
+
+import { DataSensorPipe } from './pipes/data-sensor.pipe';
+import { CapitalizePipe } from './pipes/capitalize.pipe';
 
 import { ProjectService } from './services/projects.service';
-import { SignalParseService } from './services/signals.service';
+import { SignalParseService, SignalConversionService } from './services/signals.service';
 import { VideoService } from './services/video.service';
+import { DisplaySignalService } from './services/display-signal.service';
 
 @NgModule({
   imports: [
@@ -43,14 +50,21 @@ import { VideoService } from './services/video.service';
     NewWorkspaceComponent,
     VideoUploaderComponent,
     SignalUploaderComponent,
+    SignalDisplayComponent,
     SignalWidgetComponent,
+    SignalFilterMenuComponent,
     FILE_UPLOAD_DIRECTIVES,
-    FileDropDirective
+    FileDropDirective,
+    POPOVER_DIRECTIVES,
+    DataSensorPipe,
+    CapitalizePipe
   ],
   providers: [
     SignalParseService,
+    SignalConversionService,
     VideoService,
     ProjectService,
+    DisplaySignalService,
     { provide: XHRBackend, useClass: InMemoryBackendService }, // in-mem server
     { provide: SEED_DATA,  useClass: MockDataService }     // in-mem server data
   ],

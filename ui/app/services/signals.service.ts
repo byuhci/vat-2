@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DomSanitizationService, SafeUrl } from '@angular/platform-browser';
-import { Sensor, Signal } from './../util/signal';
+import { Sensor, Signal, Data, DisplaySignals } from './../util/signal';
 
 // allows use of d3 scripts without compiler complaining
 declare var d3: any;
@@ -15,8 +15,8 @@ export class SignalParseService {
             console.log('via FileReader', file);
             this.fileToString(file)
                 .then(str => this.toRows(str))
-                .then(rows => this.toSensors(rows))
-                .then(signals => resolve(signals))
+                .then(rows => this.toData(rows))
+                .then(data => resolve(data))
                 .catch(err => reject(err));
         });  
     }
@@ -54,7 +54,7 @@ export class SignalParseService {
         });
     }
 
-    private toSensors(rows) {
+    private toData(rows) {
         return new Promise((resolve) => {
             let sensors = {};
 
@@ -87,6 +87,44 @@ export class SignalParseService {
             }
             console.log('sensors:', sensors);
             resolve(sensors);
+        });
+    }
+}
+
+
+@Injectable()
+export class SignalConversionService {
+
+    constructor() { }
+
+    public dataToSensors(data: Data): Promise<Sensor[]> {
+        return new Promise((resolve) => {
+            let result: Sensor[] = [];
+            for (let key in data) {
+                result.push(data[key]);
+            }
+            resolve(result);
+        });
+    }
+
+    public sensorsToSignals(sensors: Sensor[]): Promise<Signal[]> {
+        return new Promise((resolve) => {
+            let result: Signal[] = [];
+            for (let sensor of sensors) {
+                result = result.concat(sensor.signals);
+            }
+            resolve(result);
+        });
+
+    }
+
+    public displayToSignals(display: DisplaySignals, data: Data): Promise<Signal[]> {
+        return new Promise((resolve, reject) => {
+                this.dataToSensors(data)
+                    .then(sensors => this.sensorsToSignals(sensors))
+                    .then(signals => resolve(signals.filter(
+                        signal => display[signal._sensor.name] && display[signal._sensor.name][signal.dim])))
+                    .catch(err => reject(err));
         });
     }
 }

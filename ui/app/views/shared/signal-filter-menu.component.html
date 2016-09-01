@@ -1,0 +1,17 @@
+<popover-content #pop title="Display Signals:" [closeOnClickOutside]="true" placement="right">
+    <div class="list-group">
+        <div class="list-group-item" *ngFor="let sensor of (sensors | dataSensor)">
+            <label>{{sensor.fullName | capitalize}}</label>
+
+            <div class="dims" *ngIf="_display">
+                <label class="checkbox-inline" *ngFor="let signal of sensor.signals">
+                    <input type="checkbox"
+                           [checked]="check(sensor.name, signal.dim)"
+                           (change)="checkChange(sensor.name, signal.dim, $event)">{{signal.dim}}
+                </label>
+            </div>
+        </div>
+    </div>
+</popover-content>
+
+<span class="glyphicon glyphicon-filter" [popover]="pop"></span>

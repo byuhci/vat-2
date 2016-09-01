@@ -4,19 +4,23 @@ declare var d3: any;
 export class Sensor {
     name: string;
     fullName: string;
-    signals: SignalDict;
+    _sigs: SignalDict;
+    get signals(): Signal[] {return Object.keys(this._sigs).map(key => this._sigs[key]);}
 
     constructor(name: string) {
         this.name = name;
         this.fullName = SENSOR_NAMES[name];
-        this.signals = {};
+        this._sigs = {};
     }
 
-    getSignal(idx: number): Signal {
-        if (!(idx in this.signals)) {
-            this.signals[idx] = new Signal(this.name, idx);
+    getSignal(idx: number | string): Signal {
+        if (typeof idx === "number" ) {
+            idx = SIGNAL_DIM(this.name, idx as number);
         }
-        return this.signals[idx];
+        if (!(idx in this._sigs)) {
+            this._sigs[idx] = new Signal(this, idx as string);
+        }
+        return this._sigs[idx];
     }
 
     isMessage(): boolean {
@@ -33,8 +37,8 @@ export class Sensor {
             xMax: firstSignal.readings[firstSignal.readings.length-1].tick,
             yMin: 0,
             yMax: 0}
-        for (let dim in this.signals) {
-            let signal = this.signals[dim];
+        for (let dim in this._sigs) {
+            let signal = this._sigs[dim];
             let yExt = d3.extent(signal.readings, (r: Reading) => r.value);
             result.yMin = Math.min(result.yMin, yExt[0]);
             result.yMax = Math.max(result.yMax, yExt[1]);
@@ -44,17 +48,16 @@ export class Sensor {
 }
 
 export class Signal {
-    _sensor: string;
+    _sensor: Sensor;
     sensor: string;
     dim: string;
-    dimIdx: number;
     readings: Reading[];
+    get name(): string {return this.sensor + "--" + this.dim}
 
-    constructor(sensor: string, dimIdx: number) {
+    constructor(sensor: Sensor, dim: string) {
         this._sensor = sensor;
-        this.sensor = SENSOR_NAMES[sensor];
-        this.dimIdx = dimIdx;
-        this.dim = SIGNAL_DIM(sensor, dimIdx);
+        this.sensor = SENSOR_NAMES[sensor.name];
+        this.dim = dim;
         this.readings = [];
     }
 
@@ -75,4 +78,12 @@ export interface SignalDict {
 
 export interface Data {
     [index: string]: Sensor;
+}
+
+export interface SignalStatus {
+    [index: string]: boolean;
+}
+
+export interface DisplaySignals {
+    [index: string]: SignalStatus;
 }
