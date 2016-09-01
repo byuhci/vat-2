@@ -52,6 +52,7 @@ export class Signal {
     sensor: string;
     dim: string;
     readings: Reading[];
+    get name(): string {return this.sensor + "--" + this.dim}
 
     constructor(sensor: Sensor, dim: string) {
         this._sensor = sensor;
