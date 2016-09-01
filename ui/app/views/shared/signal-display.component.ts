@@ -120,28 +120,37 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
     /** Builds the SVG Element */
     private buildSVG(): void {
         this.host.html('');
+
+        // create SVG
         this.svg = this.host.append('svg')
             .attr('width', this.width + this.margin.left + this.margin.right)
             .attr('height', this.height + this.margin.top + this.margin.bottom)
             .append('g')
             .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
+
+        // setup clip-path
         this.svg.append("defs").append("clipPath")
             .attr("id", "clip")
             .append("rect")
-            .attr("width", this.width - 1)
-            .attr("height", this.height - 1);
+            .attr("width", this.width)
+            .attr("height", this.height);
 
+        // create view element
         this.view = this.svg.append("rect")
             .attr("class", "view")
             .attr("x", 0.5)
             .attr("y", 0.5)
-            .attr("width", this.width - 1)
-            .attr("height", this.height - 1);
-        
+            .attr("width", this.width)
+            .attr("height", this.height);
+
+        // create zoom behavior
         this.zoom = d3.zoom()
             .scaleExtent([1, 50])
+            .translateExtent([[0, 0], [this.width, this.height]])
+            .extent([[0, 0], [this.width, this.height]])
             .on("zoom", () => this.zoomed());
-
+        
+        // create zoom portal
         this.portal = this.svg.append("rect")
             .attr("class", "zoom")
             .attr("width", this.width)
@@ -215,6 +224,7 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
     /** Sets up the initial zoom scale */
     private setInitialZoom(): void {
         this.zoom.scaleTo(this.portal, 2);
+        this.zoom.translateBy(this.portal, this.width);
     }
 
     private zoomed(): void {
@@ -222,15 +232,13 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
         this.xScale.domain(t.rescaleX(this.x0Scale).domain());
         this.sensors.forEach(sensor => {
             let selector = ".line--" + sensor;
-            let sel = this.svg.selectAll(selector);
-            console.debug('zoom', sensor, sel, selector);
-            sel.attr("d", this.lines[sensor]);
+            let sel = this.svg.selectAll(selector)
+                                .attr("d", this.lines[sensor]);
         });
-        //this.svg.selectAll(".line").attr("d", this.line);
         this.svg.select(".axis--x").call(this.xAxis);
     }
 
     private mouseover(signal: Signal) {
-        console.log('d', signal);
+        //console.log('d', signal);
     }
 }
