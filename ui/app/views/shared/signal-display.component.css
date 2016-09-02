@@ -52,6 +52,15 @@
     fill: rgba(0, 0, 0, 0.9);
 }
 
+:host .axis--hover text {
+    fill: rgba(0, 0, 0, 1);
+    font-weight: bold;
+}
+
+:host .axis--fade text {
+    fill: rgba(0, 0, 0, 0.5);
+}
+
 :host .grid .tick {
     stroke: rgba(0, 0, 0, 0.1);
     opacity: 0.3;

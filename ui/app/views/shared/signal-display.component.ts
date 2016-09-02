@@ -248,6 +248,11 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
         d3.select('.' + signal.name).classed('line--hover', true); // highlight the moused-over signal
         d3.selectAll('.line:not(.' + signal.name + ')').classed('line--fade', true); // fade the rest
 
+        // Axis Highlight
+        let axis = '.axis--' + signal.sensor
+        d3.select(axis).classed('axis--hover', true);
+        d3.selectAll('.axis--y:not(' + axis + ')').classed('axis--fade', true);
+
         // Tooltip
         let mouse = d3.mouse(this.svg.node());
         this.tooltip.transition()
@@ -263,6 +268,11 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
         d3.selectAll(".line")
             .classed("line--hover", false)
             .classed("line--fade", false);
+
+        // Turn Off Axis Highlight
+        d3.selectAll('.axis--y')
+            .classed("axis--hover", false)
+            .classed("axis--fade", false);
         
         // Hide Tooltip
         this.tooltip.transition()
