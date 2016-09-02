@@ -33,7 +33,8 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
     private paths;       // Container for all line paths
     private url;         // The relative url path from root
     private zoom;        // The zoom behavior
-    private portal;  // The zoom portal in the background to register zoom events
+    private portal;      // The zoom portal in the background to register zoom events
+    private tooltip;     // The tooltip div
  
 
     constructor(private element: ElementRef, private location: Location) { 
@@ -112,7 +113,13 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
     
     /** Builds the SVG Element */
     private buildSVG(): void {
+        // clear old html
         this.host.html('');
+
+        this.tooltip = this.host.append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+        console.debug('setup tooltip', this.tooltip);
 
         // create SVG
         this.svg = this.host.append('svg')
@@ -237,16 +244,29 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
     }
 
     private mouseover(signal: Signal) {
-        // highlight the moused-over signal
-        d3.select('.' + signal.name).classed('line--hover', true);
-        // fade the rest
-        d3.selectAll('.line:not(.' + signal.name + ')').classed('line--fade', true);
+        // Highlight
+        d3.select('.' + signal.name).classed('line--hover', true); // highlight the moused-over signal
+        d3.selectAll('.line:not(.' + signal.name + ')').classed('line--fade', true); // fade the rest
+
+        // Tooltip
+        let mouse = d3.mouse(this.svg.node());
+        this.tooltip.transition()
+            .duration(200)
+            .style("opacity", 1);
+        this.tooltip.html(signal.name)
+            .style("left", String(mouse[0]-6) + "px")
+            .style("top", String(mouse[1]-15) + "px");
     }
 
     private mouseout() {
-        // turn off hover and fade effects
+        // Turn Off Highlight
         d3.selectAll(".line")
             .classed("line--hover", false)
             .classed("line--fade", false);
+        
+        // Hide Tooltip
+        this.tooltip.transition()
+            .duration(300)
+            .style("opacity", 0);
     }
 }
