@@ -1,5 +1,5 @@
 import { Component, OnInit, OnChanges, Input, ElementRef, HostListener } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {Location} from '@angular/common';
 import { Signal } from './../../util/signal';
 declare var d3: any;
 
@@ -36,14 +36,12 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
     private portal;  // The zoom portal in the background to register zoom events
  
 
-    constructor(private element: ElementRef, private route: ActivatedRoute) { 
+    constructor(private element: ElementRef, private location: Location) { 
         this.htmlElement = this.element.nativeElement;
         this.host = d3.select(this.element.nativeElement);
     }
 
-    ngOnInit() { 
-        console.log('received input', this.signals);
-    }
+    ngOnInit() { }
 
     /* Will Update on every @Input change */
     @HostListener('window:resize', [])
@@ -54,20 +52,15 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
         this.buildSVG();
         this.populate();
         this.drawXAxis();
-        this.drawYAxis();
+        this.drawYAxes();
         this.setInitialZoom();
     }
 
-    /* TODO: This is a hack! Try to find some other way around this problem. */
+    /** Sets the local url reference, which is needed for the SVG clip-path. */
     private setUrl(): void {
         if (!this.url) {
-            this.url = "";
-            this.route.url.forEach(path => {
-                path.forEach(part => {
-                    this.url += "/" + part.path;
-                });
-            });
-            console.log('set url', this.url);
+            this.url = this.location.path();
+            console.info('set url', this.url);
         }
     }
 
@@ -80,7 +73,7 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
 
         // initialize local variable for iterating over y-axes
         this.sensors = new Set(this.signals.map(sig => sig.sensor));
-        console.log('displayed sensors', this.sensors);
+        console.debug('displayed sensors', this.sensors);
 
         // x-scale
         this.xScale = d3.scaleLinear().range([0, this.width]);
@@ -210,7 +203,7 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
     /** Draws the Y Axes, one for each sensor.
      * Note: this code currently only scales up to 4 axes total.
     */
-    private drawYAxis(): void {
+    private drawYAxes(): void {
         let i = 0;
         this.sensors.forEach(sensor => {
             let axis = this.svg.append("g").attr("class", "axis axis--y axis--"+sensor);
@@ -228,7 +221,10 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
         this.zoom.scaleTo(this.portal, 2);
         this.zoom.translateBy(this.portal, this.width);
     }
-
+    
+    // ===========================
+    // ===== Helper Functions ====
+    // ===========================
     private zoomed(): void {
         var t = d3.event.transform;
         this.xScale.domain(t.rescaleX(this.x0Scale).domain());
