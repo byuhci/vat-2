@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ElementRef } from '@angular/core';
 
 @Component({
     moduleId: module.id,
@@ -9,9 +9,21 @@ import { Component, OnInit, Input } from '@angular/core';
 export class VideoComponent implements OnInit {
     @Input() source: string;
 
-    constructor() { }
+    private video: HTMLVideoElement;
+    private root: HTMLElement;
 
-    ngOnInit() { 
-        console.log("init vat video component");
+    constructor(private element: ElementRef) { 
+        this.root = this.element.nativeElement as HTMLElement;
+        
+    }
+
+    ngOnInit() {
+        this.video = this.root.firstChild as HTMLVideoElement;
+        console.log("init vat video component", this.video);
+    }
+
+    update(e: Event) {
+        let v = e.target as HTMLVideoElement;
+        console.log("time updated", v.currentTime);
     }
 }
