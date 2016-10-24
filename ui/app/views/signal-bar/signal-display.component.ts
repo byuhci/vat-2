@@ -47,7 +47,7 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
     /* Will Update on every @Input change */
     @HostListener('window:resize', [])
     ngOnChanges() {
-        console.log('registering changes');
+        console.groupCollapsed('updating signal-bar');
         this.setUrl();
         this.setup();
         this.buildSVG();
@@ -55,6 +55,7 @@ export class SignalDisplayComponent implements OnInit, OnChanges {
         this.drawXAxis();
         this.drawYAxes();
         this.setInitialZoom();
+        console.groupEnd();
     }
 
     /** Sets the local url reference, which is needed for the SVG clip-path. */
