@@ -9,8 +9,9 @@
     </div>
 </div>
 <div *ngIf="video">
-    <video controls>
+    <vat-video [source]="getVideoUrl()"></vat-video>
+    <!--<video controls>
         <source [src]="getVideoUrl()" type="video/mp4">
         Your browser does not support the video tag.
-    </video>
+    </video>-->
 </div>

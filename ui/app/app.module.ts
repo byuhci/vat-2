@@ -21,6 +21,7 @@ import { ProjectsComponent } from './navigation/projects.component';
 import { ViewComponent } from './views/view.component';
 import { NewWorkspaceComponent } from './views/new-workspace.component';
 import { VideoUploaderComponent } from './views/center-pane/video-uploader.component';
+import { VideoComponent } from './views/center-pane/video.component';
 import { SignalUploaderComponent } from './views/signal-pane/signal-uploader.component';
 import { SignalDisplayComponent } from './views/signal-bar/signal-display.component';
 import { SignalWidgetComponent } from './views/signal-bar/signal-widget.component';
@@ -49,6 +50,7 @@ import { DisplaySignalService } from './services/display-signal.service';
     ViewComponent,
     NewWorkspaceComponent,
     VideoUploaderComponent,
+    VideoComponent,
     SignalUploaderComponent,
     SignalDisplayComponent,
     SignalWidgetComponent,
