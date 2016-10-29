@@ -6,6 +6,7 @@ export class Sensor {
     fullName: string;
     _sigs: SignalDict;
     get signals(): Signal[] { return Object.keys(this._sigs).map(key => this._sigs[key]); }
+    get isMessage(): boolean { return (this.fullName === "syslog" || this.fullName === "error"); }
 
     constructor(name: string) {
         this.name = name;
@@ -21,13 +22,6 @@ export class Sensor {
             this._sigs[signal] = new Signal(this, signal as string);
         }
         return this._sigs[signal];
-    }
-
-    isMessage(): boolean {
-        if (this.fullName === "syslog" || this.fullName === "error") {
-            return true;
-        }
-        return false;
     }
 
     extents() {
@@ -61,6 +55,7 @@ export class Syslog extends Sensor {
 
     get firstRedFlash(): Reading { return this.getSignal(this.FLASHES).readings[0]; }
     get flashes(): Signal { return this.getSignal(this.FLASHES); }
+    get isMessage(): boolean { return true; }
 
     append(reading: Reading, signal: number | string) {
         if (reading.value === "LED Sync") {
@@ -69,9 +64,6 @@ export class Syslog extends Sensor {
         super.append(reading, signal);
     }
 
-    isMessage(): boolean {
-        return true;
-    }
 }
 
 export class Signal {

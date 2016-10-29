@@ -7,6 +7,6 @@ import { Sensor } from './../util/signal';
 
 export class DataSensorPipe implements PipeTransform {
     transform(sensors: Sensor[]): Sensor[] {
-        return sensors.filter(sensor => !sensor.isMessage());
+        return sensors.filter(sensor => !sensor.isMessage);
     }
 }
