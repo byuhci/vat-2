@@ -45,6 +45,18 @@ export class Sensor {
         }
         return result;
     }
+
+    append(reading: Reading, signal: number | string) {
+        this.getSignal(signal).append(reading);
+    }
+}
+
+export class SyslogSensor extends Sensor {
+
+    constructor() {
+        super('S');
+    }
+
 }
 
 export class Signal {

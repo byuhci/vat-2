@@ -82,7 +82,7 @@ export class SignalParseService {
                     }
                     //create a Reading object, and append to signal
                     let r = {tick: row.tick, value: value};
-                    sensor.getSignal(i).append(r);
+                    sensor.append(r, i);
                 }
             }
             console.log('sensors:', sensors);
