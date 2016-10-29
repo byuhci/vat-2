@@ -9,13 +9,13 @@ export const SENSOR_NAMES = {
     'V': 'voltage'
 }
 
-export const XYZ = {
+const XYZ = {
     0: "x",
     1: "y",
     2: "z"
 }
 
-export const BAROMETER = {
+const BAROMETER = {
     0: "altitude",
     1: "temperature"
 }
@@ -27,13 +27,12 @@ const sig_dim = {
     'L': { 0: 'light' },
     'T': { 0: 'temperature' },
     'E': { 0: 'msg' },
-    'S': { 0: 'msg' },
+    'S': { 0: 'msg', 1:'flashes'},
     'V': { 0: 'voltage' }
 }
 
 /**
  * Returns the name of the specified dimension index for the specified signal.
- * This is kept in signals config since this function may be subject to change.
  */
 export function SIGNAL_DIM(name: string, idx: number): string {
     return sig_dim[name][idx] || String(idx);

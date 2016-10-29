@@ -5,7 +5,7 @@ export class Sensor {
     name: string;
     fullName: string;
     _sigs: SignalDict;
-    get signals(): Signal[] {return Object.keys(this._sigs).map(key => this._sigs[key]);}
+    get signals(): Signal[] { return Object.keys(this._sigs).map(key => this._sigs[key]); }
 
     constructor(name: string) {
         this.name = name;
@@ -13,14 +13,14 @@ export class Sensor {
         this._sigs = {};
     }
 
-    getSignal(idx: number | string): Signal {
-        if (typeof idx === "number" ) {
-            idx = SIGNAL_DIM(this.name, idx as number);
+    getSignal(signal: number | string): Signal {
+        if (typeof signal === "number" ) {
+            signal = SIGNAL_DIM(this.name, signal as number);
         }
-        if (!(idx in this._sigs)) {
-            this._sigs[idx] = new Signal(this, idx as string);
+        if (!(signal in this._sigs)) {
+            this._sigs[signal] = new Signal(this, signal as string);
         }
-        return this._sigs[idx];
+        return this._sigs[signal];
     }
 
     isMessage(): boolean {
@@ -51,12 +51,27 @@ export class Sensor {
     }
 }
 
-export class SyslogSensor extends Sensor {
+export class Syslog extends Sensor {
+
+    private FLASHES = SIGNAL_DIM('S', 1);
 
     constructor() {
         super('S');
     }
 
+    get firstRedFlash(): Reading { return this.getSignal(this.FLASHES).readings[0]; }
+    get flashes(): Signal { return this.getSignal(this.FLASHES); }
+
+    append(reading: Reading, signal: number | string) {
+        if (reading.value === "LED Sync") {
+            signal = this.FLASHES;
+        }
+        super.append(reading, signal);
+    }
+
+    isMessage(): boolean {
+        return true;
+    }
 }
 
 export class Signal {
@@ -85,7 +100,7 @@ export interface Reading {
 }
 
 export interface SignalDict {
-    [index: number]: Signal;
+    [index: string]: Signal;
 }
 
 export interface Data {

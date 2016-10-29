@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DomSanitizationService, SafeUrl } from '@angular/platform-browser';
-import { Sensor, Signal, Data, DisplaySignals } from './../util/signal';
+import { Sensor, Syslog, Signal, Data, DisplaySignals } from './../util/signal';
 
 // allows use of d3 scripts without compiler complaining
 declare var d3: any;
@@ -61,7 +61,12 @@ export class SignalParseService {
             // makes sure there is a Sensor object
             function getSensor(token): Sensor {
                 if (!(token in sensors)) {
-                    sensors[token] = new Sensor(token);
+                    if (token === 'S') {
+                        sensors[token] = new Syslog();
+                    } 
+                    else {
+                        sensors[token] = new Sensor(token);
+                    } 
                 }
                 return sensors[token];
             }
