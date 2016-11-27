@@ -13,9 +13,13 @@ To run the Typescript compiler via npm, run the command: `npm run tsc` or `npm r
 
 ### Running
 Since most of the content is rendered dynamically with Javascript, so to work properly it needs to be run from some sort of Javascript server.
-For this project we use [lite-server](https://github.com/johnpapa/lite-server), which is listed in the development dependencies.
+For this project I've been using [lite-server](https://github.com/johnpapa/lite-server), which is listed in the development dependencies. 
 
 To start the front-end server, run the command: `npm run lite`
+
+Alternatively you could try using python to start up a quick server by running the following command from the terminal:
+
+`python -m SimpleHTTPServer 8000`
 
 ### Unit Tests
 To run the suite of unit tests, run the command `npm run test`
